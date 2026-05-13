@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ALO-STACK | Interactive Algorithm Showcase</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary": "#2e3134",
+                      "surface-bright": "#2e3a4a",
+                      "surface-container-high": "#1e2b3a",
+                      "error": "#ffb4ab",
+                      "tertiary-fixed": "#e1e2e7",
+                      "secondary-container": "#14d1ff",
+                      "on-secondary-fixed-variant": "#004e60",
+                      "secondary": "#a6e6ff",
+                      "on-primary-fixed": "#2d1600",
+                      "background": "#071423",
+                      "surface-container": "#14202f",
+                      "surface-container-low": "#0f1c2b",
+                      "primary": "#ffb874",
+                      "on-primary": "#4b2800",
+                      "on-secondary": "#003543",
+                      "tertiary-fixed-dim": "#c5c6cb",
+                      "on-tertiary-container": "#3d4043",
+                      "inverse-primary": "#8c4f00",
+                      "on-tertiary-fixed-variant": "#44474b",
+                      "inverse-surface": "#d6e3f8",
+                      "on-surface-variant": "#dbc2ae",
+                      "on-primary-fixed-variant": "#6b3b00",
+                      "on-error": "#690005",
+                      "surface-tint": "#ffb874",
+                      "surface-container-lowest": "#030f1d",
+                      "error-container": "#93000a",
+                      "outline": "#a38d7b",
+                      "primary-fixed-dim": "#ffb874",
+                      "surface-variant": "#293645",
+                      "secondary-fixed-dim": "#4cd6ff",
+                      "outline-variant": "#554335",
+                      "surface-dim": "#071423",
+                      "surface": "#071423",
+                      "on-background": "#d6e3f8",
+                      "on-secondary-container": "#00566b",
+                      "inverse-on-surface": "#253141",
+                      "tertiary-container": "#a9abaf",
+                      "on-error-container": "#ffdad6",
+                      "on-secondary-fixed": "#001f28",
+                      "on-primary-container": "#603500",
+                      "on-tertiary-fixed": "#191c1f",
+                      "primary-container": "#f7931a",
+                      "surface-container-highest": "#293645",
+                      "primary-fixed": "#ffdcbf",
+                      "secondary-fixed": "#b7eaff",
+                      "on-surface": "#d6e3f8",
+                      "tertiary": "#c5c6cb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "24px",
+                      "xl": "80px",
+                      "gutter": "24px",
+                      "xs": "4px",
+                      "margin-desktop": "64px",
+                      "sm": "12px",
+                      "lg": "48px",
+                      "margin-mobile": "20px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "data-mono": ["JetBrains Mono"],
+                      "display-lg": ["Hanken Grotesk"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-caps": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(22, 26, 30, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .cyber-glow {
+            box-shadow: 0px 0px 20px rgba(255, 184, 116, 0.15);
+        }
+        .bitcoin-gradient-text {
+            background: linear-gradient(90deg, #F7931A 0%, #ffb874 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 z-50 w-full bg-background/70 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(255,184,116,0.05)]">
+    <div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-screen-2xl mx-auto">
+        <a href="/" class="font-headline-sm text-headline-sm font-bold text-primary tracking-tight hover:opacity-80 transition">ALO-STACK</a>
+        <div class="hidden md:flex gap-lg">
+            <a href="/" class="font-label-caps text-label-caps text-on-surface-variant hover:text-secondary transition-all duration-300">Back to Overview</a>
+        </div>
+    </div>
+</nav>
+
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-screen-2xl mx-auto">
+        <div class="mb-xl">
+            <h1 class="font-display-lg text-display-lg font-extrabold mb-md uppercase tracking-tighter">
+                Interactive <span class="bitcoin-gradient-text">Algorithm Optimizer</span>
+            </h1>
+            <p class="font-body-lg text-on-surface-variant">Configure your optimization parameters, select a metaheuristic, and watch real-time convergence analysis unfold. Generate trading signals and backtesting results instantly.</p>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="glass-card p-xl cyber-glow mb-xl">
+            <h2 class="font-headline-sm text-headline-sm mb-lg">Configuration Panel</h2>
+            
+            {% if error_msg %}
+            <div class="bg-error/10 border border-error/30 rounded-lg p-md mb-lg">
+                <p class="font-body-md text-error">⚠ {{ error_msg }}</p>
+            </div>
+            {% endif %}
+
+            <form method="post" class="space-y-lg">
+                <!-- Algorithm Selection -->
+                <div class="space-y-sm">
+                    <label class="font-label-caps text-label-caps">SELECT ALGORITHM</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+                        <label class="glass-card p-md cursor-pointer hover:border-secondary-container/50 transition">
+                            <input type="radio" name="method" value="CS" {% if form.method == 'CS' %}checked{% endif %} class="hidden">
+                            <div class="flex items-center gap-sm">
+                                <span class="material-symbols-outlined text-secondary-container">auto_awesome</span>
+                                <span class="font-headline-sm">Cuckoo Search</span>
+                            </div>
+                            <p class="font-body-md text-on-surface-variant text-sm mt-sm">Lévy Flights</p>
+                        </label>
+                        <label class="glass-card p-md cursor-pointer hover:border-secondary/50 transition">
+                            <input type="radio" name="method" value="ALO" {% if form.method == 'ALO' %}checked{% endif %} class="hidden">
+                            <div class="flex items-center gap-sm">
+                                <span class="material-symbols-outlined text-secondary">hub</span>
+                                <span class="font-headline-sm">Antlion</span>
+                            </div>
+                            <p class="font-body-md text-on-surface-variant text-sm mt-sm">Swarm Intel</p>
+                        </label>
+                        <label class="glass-card p-md cursor-pointer hover:border-primary/50 transition">
+                            <input type="radio" name="method" value="SA" {% if form.method == 'SA' %}checked{% endif %} class="hidden">
+                            <div class="flex items-center gap-sm">
+                                <span class="material-symbols-outlined text-primary">thermostat</span>
+                                <span class="font-headline-sm">Annealing</span>
+                            </div>
+                            <p class="font-body-md text-on-surface-variant text-sm mt-sm">Single-State</p>
+                        </label>
+                        <label class="glass-card p-md cursor-pointer hover:border-error/50 transition">
+                            <input type="radio" name="method" value="RS" {% if form.method == 'RS' %}checked{% endif %} class="hidden">
+                            <div class="flex items-center gap-sm">
+                                <span class="material-symbols-outlined text-error">shuffle</span>
+                                <span class="font-headline-sm">Random</span>
+                            </div>
+                            <p class="font-body-md text-on-surface-variant text-sm mt-sm">Baseline</p>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Constraints -->
+                <div class="space-y-sm">
+                    <label class="font-label-caps text-label-caps">PARAMETER CONSTRAINTS</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                        <label class="glass-card p-md flex items-center gap-sm cursor-pointer hover:border-primary/50 transition">
+                            <input type="checkbox" name="high_limit" {% if form.high_limit %}checked{% endif %} class="w-5 h-5">
+                            <div>
+                                <p class="font-headline-sm">Limit HIGH Component</p>
+                                <p class="font-body-md text-on-surface-variant text-sm">Reduce fast window sizes</p>
+                            </div>
+                        </label>
+                        <label class="glass-card p-md flex items-center gap-sm cursor-pointer hover:border-primary/50 transition">
+                            <input type="checkbox" name="low_limit" {% if form.low_limit %}checked{% endif %} class="w-5 h-5">
+                            <div>
+                                <p class="font-headline-sm">Limit LOW Component</p>
+                                <p class="font-body-md text-on-surface-variant text-sm">Reduce slow window sizes</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Budget Slider -->
+                <div class="space-y-sm">
+                    <div class="flex justify-between">
+                        <label class="font-label-caps text-label-caps">EVALUATION BUDGET</label>
+                        <span class="font-data-mono text-primary text-headline-sm">{{ form.budget }} EVALS</span>
+                    </div>
+                    <input type="range" name="budget" min="200" max="1200" step="50" value="{{ form.budget }}" class="w-full" />
+                    <div class="grid grid-cols-3 gap-sm text-sm">
+                        <span class="font-data-mono text-on-surface-variant text-left">200 (Quick)</span>
+                        <span class="font-data-mono text-on-surface-variant text-center">600 (Standard)</span>
+                        <span class="font-data-mono text-on-surface-variant text-right">1200 (Deep)</span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-primary text-on-primary font-headline-sm text-headline-sm py-md rounded-lg hover:shadow-[0_0_30px_rgba(247,147,26,0.3)] transition-all active:scale-95">
+                    <span class="flex items-center justify-center gap-sm">
+                        <span class="material-symbols-outlined">play_circle</span>
+                        RUN OPTIMIZATION
+                    </span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        {% if result %}
+        <div class="space-y-lg">
+            <!-- Result Summary -->
+            <div class="glass-card p-xl cyber-glow">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+                    <div>
+                        <p class="font-label-caps text-on-surface-variant mb-sm">Algorithm</p>
+                        <p class="font-headline-sm text-secondary-container">{{ result.algo_name }}</p>
+                    </div>
+                    <div>
+                        <p class="font-label-caps text-on-surface-variant mb-sm">Training Best</p>
+                        <p class="font-headline-sm text-primary">{{ result.best_fitness }}</p>
+                    </div>
+                    <div>
+                        <p class="font-label-caps text-on-surface-variant mb-sm">Test Final</p>
+                        <p class="font-headline-sm text-secondary-container">{{ result.test_value }}</p>
+                    </div>
+                    <div>
+                        <p class="font-label-caps text-on-surface-variant mb-sm">Evaluations</p>
+                        <p class="font-data-mono text-headline-sm">{{ result.budget }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Convergence Chart -->
+            <div class="glass-card p-xl">
+                <h2 class="font-headline-sm text-headline-sm mb-md">Convergence Trajectory</h2>
+                <img src="data:image/png;base64,{{ convergence_image }}" alt="Convergence" class="w-full rounded-lg" />
+                <p class="font-body-md text-on-surface-variant mt-md">Training phase optimization showing best fitness value improving across iterations. Evaluates on 4-segment Bitcoin history (2014-2019).</p>
+            </div>
+
+            <!-- Portfolio Curve -->
+            <div class="glass-card p-xl">
+                <h2 class="font-headline-sm text-headline-sm mb-md">Out-of-Sample Backtest (2020+)</h2>
+                <img src="data:image/png;base64,{{ portfolio_image }}" alt="Portfolio" class="w-full rounded-lg" />
+                <p class="font-body-md text-on-surface-variant mt-md">Deployment of optimized parameters on unseen market data. Comparison with Buy & Hold passive baseline strategy.</p>
+            </div>
+
+            <!-- Trading Signals -->
+            <div class="glass-card p-xl">
+                <h2 class="font-headline-sm text-headline-sm mb-md">Trading Signal Analysis</h2>
+                <img src="data:image/png;base64,{{ signals_image }}" alt="Signals" class="w-full rounded-lg" />
+                <p class="font-body-md text-on-surface-variant mt-md">HIGH composite line (fast EMA/SMA/LMA blend) vs. LOW composite line (slow blend). Green triangles: buy signals. Red triangles: sell signals.</p>
+            </div>
+
+            <!-- Insights -->
+            <div class="glass-card p-xl border-primary/20 bg-primary/5">
+                <h3 class="font-headline-sm text-headline-sm mb-md flex items-center gap-sm">
+                    <span class="material-symbols-outlined text-primary">info</span>
+                    Interpretation Guide
+                </h3>
+                <ul class="space-y-sm font-body-md text-on-surface-variant">
+                    <li class="flex gap-sm">
+                        <span class="text-primary font-bold">→</span>
+                        <span><strong class="text-on-surface">Convergence Graph:</strong> Shows whether algorithm explores early (flat start) vs. exploits later (steep improvement).</span>
+                    </li>
+                    <li class="flex gap-sm">
+                        <span class="text-primary font-bold">→</span>
+                        <span><strong class="text-on-surface">Portfolio Curve:</strong> Out-of-sample generalization test. High training value may not translate to test performance.</span>
+                    </li>
+                    <li class="flex gap-sm">
+                        <span class="text-primary font-bold">→</span>
+                        <span><strong class="text-on-surface">Signal Timing:</strong> Frequency and clustering of buy/sell signals reveal strategy risk. More signals = higher fee drag.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+</main>
+
+<!-- Footer -->
+<footer class="py-lg border-t border-outline-variant/30 bg-surface-container-lowest">
+    <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop gap-md max-w-screen-2xl mx-auto">
+        <a href="/" class="font-headline-sm text-headline-sm font-bold text-primary hover:opacity-80">ALO-STACK</a>
+        <div class="font-body-md text-body-md text-on-surface-variant">
+            © 2025 ALO-STACK. Interactive Metaheuristic Comparison.
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

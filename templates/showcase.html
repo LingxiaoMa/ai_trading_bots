@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AI Project | Bitcoin Trading Optimization Presentation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary": "#2e3134",
+                      "surface-bright": "#2e3a4a",
+                      "surface-container-high": "#1e2b3a",
+                      "error": "#ffb4ab",
+                      "tertiary-fixed": "#e1e2e7",
+                      "secondary-container": "#14d1ff",
+                      "on-secondary-fixed-variant": "#004e60",
+                      "secondary": "#a6e6ff",
+                      "on-primary-fixed": "#2d1600",
+                      "background": "#071423",
+                      "surface-container": "#14202f",
+                      "surface-container-low": "#0f1c2b",
+                      "primary": "#ffb874",
+                      "on-primary": "#4b2800",
+                      "on-secondary": "#003543",
+                      "tertiary-fixed-dim": "#c5c6cb",
+                      "on-tertiary-container": "#3d4043",
+                      "inverse-primary": "#8c4f00",
+                      "on-tertiary-fixed-variant": "#44474b",
+                      "inverse-surface": "#d6e3f8",
+                      "on-surface-variant": "#dbc2ae",
+                      "on-primary-fixed-variant": "#6b3b00",
+                      "on-error": "#690005",
+                      "surface-tint": "#ffb874",
+                      "surface-container-lowest": "#030f1d",
+                      "error-container": "#93000a",
+                      "outline": "#a38d7b",
+                      "primary-fixed-dim": "#ffb874",
+                      "surface-variant": "#293645",
+                      "secondary-fixed-dim": "#4cd6ff",
+                      "outline-variant": "#554335",
+                      "surface-dim": "#071423",
+                      "surface": "#071423",
+                      "on-background": "#d6e3f8",
+                      "on-secondary-container": "#00566b",
+                      "inverse-on-surface": "#253141",
+                      "tertiary-container": "#a9abaf",
+                      "on-error-container": "#ffdad6",
+                      "on-secondary-fixed": "#001f28",
+                      "on-primary-container": "#603500",
+                      "on-tertiary-fixed": "#191c1f",
+                      "primary-container": "#f7931a",
+                      "surface-container-highest": "#293645",
+                      "primary-fixed": "#ffdcbf",
+                      "secondary-fixed": "#b7eaff",
+                      "on-surface": "#d6e3f8",
+                      "tertiary": "#c5c6cb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "24px",
+                      "xl": "80px",
+                      "gutter": "24px",
+                      "xs": "4px",
+                      "margin-desktop": "64px",
+                      "sm": "12px",
+                      "lg": "48px",
+                      "margin-mobile": "20px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "data-mono": ["JetBrains Mono"],
+                      "display-lg": ["Hanken Grotesk"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-caps": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(22, 26, 30, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .cyber-glow {
+            box-shadow: 0px 0px 20px rgba(255, 184, 116, 0.15);
+        }
+        .bitcoin-gradient-text {
+            background: linear-gradient(90deg, #F7931A 0%, #ffb874 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .mesh-bg {
+            background-image: radial-gradient(circle at 2px 2px, rgba(247, 147, 26, 0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 12s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 sticky z-50 w-full bg-background/70 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(255,184,116,0.05)]">
+    <div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-screen-2xl mx-auto">
+        <div class="font-headline-sm text-headline-sm font-bold text-primary tracking-tight">AI Project</div>
+        <div class="hidden md:flex gap-lg">
+            <a class="nav-link font-label-caps text-label-caps text-secondary-fixed-dim border-b-2 border-secondary-fixed-dim pb-1 hover:text-secondary transition-all duration-300" href="#overview">Overview</a>
+            <a class="nav-link font-label-caps text-label-caps text-on-surface-variant hover:text-secondary transition-all duration-300" href="#design">Design</a>
+            <a class="nav-link font-label-caps text-label-caps text-on-surface-variant hover:text-secondary transition-all duration-300" href="#algorithms">Algorithms</a>
+            <a class="nav-link font-label-caps text-label-caps text-on-surface-variant hover:text-secondary transition-all duration-300" href="#experiments">Experiments</a>
+            <a class="nav-link font-label-caps text-label-caps text-on-surface-variant hover:text-secondary transition-all duration-300" href="#results">Results</a>
+            <a class="nav-link font-label-caps text-label-caps text-on-surface-variant hover:text-secondary transition-all duration-300" href="#conclusions">Conclusions</a>
+        </div>
+        <div class="flex items-center gap-md">
+            <a href="/demo" class="bg-primary-container text-on-primary font-label-caps text-label-caps px-md py-sm rounded-lg hover:brightness-110 active:scale-95 transition-all">Interactive Demo</a>
+        </div>
+    </div>
+</nav>
+
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-screen flex flex-col justify-center items-center text-center px-margin-mobile md:px-margin-desktop overflow-hidden mesh-bg" id="overview">
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background pointer-events-none"></div>
+    <div class="z-10 max-w-5xl">
+        <div class="inline-flex items-center gap-2 mb-md px-4 py-2 border border-primary/20 rounded-full bg-primary/5">
+            <span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+            <span class="font-data-mono text-label-caps text-primary uppercase">Metaheuristic Optimization Protocol</span>
+        </div>
+        <h1 class="font-display-lg text-display-lg md:text-[80px] leading-[1.1] mb-md font-extrabold tracking-tighter uppercase">
+            <span class="bitcoin-gradient-text">ADVANCED</span> BITCOIN TRADING STACK
+        </h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-sm">
+            Comparative metaheuristic analysis of institutional-grade algorithmic trading optimization. Four distinct paradigms competing on 14-dimensional parameter space to maximize portfolio returns.
+        </p>
+        <div class="max-w-xl mx-auto mb-lg rounded-3xl border border-white/10 bg-white/5 p-xl shadow-[0_0_40px_rgba(255,255,255,0.08)]">
+            <h2 class="font-display-lg text-headline-sm text-primary mb-md">Team Member</h2>
+            <div class="space-y-md">
+                <p class="font-headline-sm text-headline-sm text-white">Fabian Gomez Cadena — 24554819</p>
+                <p class="font-headline-sm text-headline-sm text-white">Lingxiao Ma — 24526617</p>
+                <p class="font-headline-sm text-headline-sm text-white">Yiyuan Ouyang — 24554686</p>
+                <p class="font-headline-sm text-headline-sm text-white">Siyi Ma — 245533441</p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- Bot Design Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-low" id="design">
+    <div class="max-w-screen-2xl mx-auto">
+        <div class="mb-lg border-l-4 border-primary pl-md">
+            <h2 class="font-headline-md text-headline-md uppercase tracking-tight">Bot design and parameterisation</h2>
+            <p class="font-body-md text-on-surface-variant">A practical discussion of configuration choices, hypothesis space, dimensionality, evaluation cost and the resulting parameterisation.</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-lg mb-lg">
+            <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Configuration and hypothesis space</h3>
+                <p class="font-body-md text-on-surface-variant">The bot is configured as a 14-dimensional composite filter, with two parallel composite lines (HIGH and LOW). Each line uses three weighted moving-average components: SMA, LMA and EMA, plus a smoothing alpha parameter. This creates a hypothesis space that is expressive enough to model both short-term momentum and longer trend structure while still being tractable for metaheuristic search.</p>
+            </div>
+            <div class="glass-card p-xl border-primary/20 bg-primary/5">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Dimensionality and practicality</h3>
+                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                    <li>14 degrees of freedom: 7 parameters for HIGH and 7 for LOW.</li>
+                    <li>Window lengths, filter weights and EMA alpha each contribute to the search space.</li>
+                    <li>High/Low component separation reduces degenerate solutions and adds interpretability.</li>
+                    <li>Constrained ranges keep the evaluation cost manageable during optimization.</li>
+                </ul>
+            </div>
+            <div class="glass-card p-xl border-secondary-container/20 bg-secondary-container/5">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Search space constraints</h3>
+                <p class="font-body-md text-on-surface-variant">The design enforces short-term HIGH windows (2-40) and longer-term LOW windows (21-100). This prevents the optimizer from selecting illogical configurations where the 'fast' component is slower than the 'slow' component. It also acts as a regularizer, reducing overfitting risk while preserving enough flexibility to capture market structure.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+            <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Iteration and learning</h3>
+                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                    <li>Initial trials with fully unconstrained ranges produced inconsistent HIGH/LOW behaviour.</li>
+                    <li>Introducing asymmetric window bounds improved signal stability and reduced noisy crossovers.</li>
+                    <li>Empirical evaluation showed that narrower hypothesis spaces led to better out-of-sample resilience.</li>
+                    <li>Practicality dictated a compact yet rich parameterisation that the metaheuristics could explore efficiently.</li>
+                </ul>
+            </div>
+            <div class="glass-card p-xl border-primary/20 bg-primary/5">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Resulting parameterisation</h3>
+                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                    <li>HIGH and LOW each combine SMA/LMA/EMA weights and duration controls.</li>
+                    <li>EMA alpha is tuned alongside moving-average durations for adaptive smoothing.</li>
+                    <li>Final hypotheses balance responsiveness with trend stability.</li>
+                    <li>The 14-dimensional parameter set is well suited for CS, ALO, SA and RS search strategies.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- The Algorithms Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop relative" id="algorithms">
+    <div class="max-w-screen-xl mx-auto text-center mb-xl">
+        <h2 class="font-display-lg text-display-lg uppercase mb-md">Algorithms</h2>
+        <div class="h-[1px] w-24 bg-primary mx-auto"></div>
+    </div>
+    
+    <div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-lg">
+        <!-- Cuckoo Search -->
+        <div class="glass-card p-xl border-secondary-container/20 bg-secondary-container/5 cyber-glow">
+            <div class="flex justify-between items-start mb-lg">
+                <div>
+                    <span class="font-data-mono text-secondary-container text-label-caps">[01] ADVANCED</span>
+                    <h3 class="font-headline-md text-headline-md mt-sm">Cuckoo Search</h3>
+                </div>
+                <span class="material-symbols-outlined text-secondary-container text-4xl">auto_awesome</span>
+            </div>
+            <p class="font-body-md text-on-surface-variant mb-md">Lévy Flight-based exploration with heavy-tailed random walks. Breaks local optima traps through sudden massive parameter leaps.</p>
+            <div class="space-y-sm">
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Global Search Capability</span>
+                    <span class="font-data-mono text-secondary">★★★★★</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Convergence Speed</span>
+                    <span class="font-data-mono text-secondary">★★★★☆</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Noise Robustness</span>
+                    <span class="font-data-mono text-secondary">★★★★★</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Antlion Optimizer -->
+        <div class="glass-card p-xl border-secondary/20">
+            <div class="flex justify-between items-start mb-lg">
+                <div>
+                    <span class="font-data-mono text-secondary text-label-caps">[02] POPULATION</span>
+                    <h3 class="font-headline-md text-headline-md mt-sm">Antlion Optimizer</h3>
+                </div>
+                <span class="material-symbols-outlined text-secondary text-4xl">hub</span>
+            </div>
+            <p class="font-body-md text-on-surface-variant mb-md">Swarm intelligence with adaptive boundary shrinking. Balances ant exploration vs. antlion exploitation through dynamic constraint coupling.</p>
+            <div class="space-y-sm">
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Global Search Capability</span>
+                    <span class="font-data-mono text-secondary">★★★★☆</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Convergence Speed</span>
+                    <span class="font-data-mono text-secondary">★★★★★</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Noise Robustness</span>
+                    <span class="font-data-mono text-secondary">★★★☆☆</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulated Annealing -->
+        <div class="glass-card p-xl border-secondary/20">
+            <div class="flex justify-between items-start mb-lg">
+                <div>
+                    <span class="font-data-mono text-secondary text-label-caps">[03] SINGLE-STATE</span>
+                    <h3 class="font-headline-md text-headline-md mt-sm">Simulated Annealing</h3>
+                </div>
+                <span class="material-symbols-outlined text-secondary text-4xl">thermostat</span>
+            </div>
+            <p class="font-body-md text-on-surface-variant mb-md">Metallurgical cooling inspiration. Temperature-modulated probabilistic acceptance of worse solutions enables shallow local optimum escape.</p>
+            <div class="space-y-sm">
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Global Search Capability</span>
+                    <span class="font-data-mono text-secondary">★★☆☆☆</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Convergence Speed</span>
+                    <span class="font-data-mono text-secondary">★★★☆☆</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Noise Robustness</span>
+                    <span class="font-data-mono text-secondary">★★★☆☆</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Random Search Baseline -->
+        <div class="glass-card p-xl border-error/20 bg-error/5">
+            <div class="flex justify-between items-start mb-lg">
+                <div>
+                    <span class="font-data-mono text-error text-label-caps">[04] BASELINE</span>
+                    <h3 class="font-headline-md text-headline-md mt-sm">Random Search</h3>
+                </div>
+                <span class="material-symbols-outlined text-error text-4xl">shuffle</span>
+            </div>
+            <p class="font-body-md text-on-surface-variant mb-md">Uniform random exploration across bounded parameter space. Control baseline to prove metaheuristic superiority beyond chance.</p>
+            <div class="space-y-sm">
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Global Search Capability</span>
+                    <span class="font-data-mono text-error">★☆☆☆☆</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Convergence Speed</span>
+                    <span class="font-data-mono text-error">★☆☆☆☆</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="font-label-caps">Noise Robustness</span>
+                    <span class="font-data-mono text-error">★★☆☆☆</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experiments Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-lowest" id="experiments">
+    <div class="max-w-screen-2xl mx-auto">
+        <div class="text-center mb-xl">
+            <h2 class="font-headline-md text-headline-md uppercase mb-md">Experiments and evaluation</h2>
+            <p class="font-body-md text-on-surface-variant">Detailed training and validation setup, with experiment design and evaluation criteria for the trading agent.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+            <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Training protocol</h3>
+                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                    <li>Training on pre-2020 Bitcoin history, limiting overfitting to the chosen regime.</li>
+                    <li>Fixed 9,000-evaluation budget per algorithm for fair comparison.</li>
+                    <li>Single-segment and multi-segment fitness functions probe robustness.</li>
+                    <li>High/Low signal component constraints improve filter consistency.</li>
+                </ul>
+            </div>
+            <div class="glass-card p-xl border-primary/20 bg-primary/5">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Validation strategy</h3>
+                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                    <li>Out-of-sample testing on 2020+ BTC prices with transaction cost model.</li>
+                    <li>Buy-and-hold benchmark used to measure live-market resilience.</li>
+                    <li>Interactive signal charts verify trade entry and exit quality.</li>
+                    <li>Performance metrics focused on generalization rather than training peak only.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="glass-card p-xl border-secondary-container/20 bg-secondary-container/5 mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-sm">Experiment variables</h3>
+            <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                <li>Algorithm type: CS, ALO, SA, RS.</li>
+                <li>Signal design: 14 parameters controlling HIGH/LOW crossover filters.</li>
+                <li>Regime tests: single-segment vs multi-segment training objectives.</li>
+                <li>Evaluation focus: portfolio growth, convergence stability, and signal interpretability.</li>
+            </ul>
+        </div>
+
+        <div class="mt-lg flex justify-center">
+            <a href="/demo" class="inline-flex items-center justify-center rounded-full bg-secondary-container px-xl py-md text-on-secondary-container font-headline-sm uppercase tracking-tight shadow-[0_0_30px_rgba(20,209,255,0.35)] transition-all hover:brightness-110 active:scale-95">
+                Launch Interactive Demo
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Results Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-lowest" id="results">
+    <div class="max-w-screen-2xl mx-auto">
+        <div class="text-center mb-xl">
+            <h2 class="font-headline-md text-headline-md uppercase mb-md">Detailed Results</h2>
+            <p class="font-body-md text-on-surface-variant">Results are presented in comparative tables and charts for academic clarity.</p>
+        </div>
+
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-md">Algorithm Comparison Table</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left text-on-surface-variant">
+                    <thead>
+                        <tr class="border-b border-outline-variant/30">
+                            <th class="py-sm pr-md font-label-caps text-label-caps uppercase">Algorithm</th>
+                            <th class="py-sm pr-md font-label-caps text-label-caps uppercase">Category</th>
+                            <th class="py-sm pr-md font-label-caps text-label-caps uppercase">Strength</th>
+                            <th class="py-sm pr-md font-label-caps text-label-caps uppercase">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/10">
+                        <tr>
+                            <td class="py-sm">Cuckoo Search</td>
+                            <td class="py-sm">Lévy-flight population</td>
+                            <td class="py-sm">High exploration</td>
+                            <td class="py-sm">Best training convergence; strong global jumps.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-sm">Antlion Optimizer</td>
+                            <td class="py-sm">Swarm intelligence</td>
+                            <td class="py-sm">Balanced search</td>
+                            <td class="py-sm">Good exploitation; moderate generalization.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-sm">Simulated Annealing</td>
+                            <td class="py-sm">Single-state</td>
+                            <td class="py-sm">Local refinement</td>
+                            <td class="py-sm">Slow but stable; escape via probabilistic acceptance.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-sm">Random Search</td>
+                            <td class="py-sm">Baseline</td>
+                            <td class="py-sm">Low</td>
+                            <td class="py-sm">Control benchmark for algorithmic significance.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+            <div class="glass-card p-xl cyber-glow">
+                <h3 class="font-headline-sm text-headline-sm mb-md">Training Performance</h3>
+                <p class="font-body-md text-on-surface-variant mb-md">Convergence charts show how each algorithm improves best portfolio value during the training phase. Cuckoo Search attains the highest final objective value, while Random Search remains the control baseline.</p>
+                <div class="space-y-md">
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Cuckoo Search</span>
+                        <span class="font-data-mono text-headline-sm text-secondary-container">$26,847</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary-container h-full w-[88%]"></div></div>
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Antlion Optimizer</span>
+                        <span class="font-data-mono text-headline-sm text-secondary">$18,392</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary h-full w-[60%]"></div></div>
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Simulated Annealing</span>
+                        <span class="font-data-mono text-headline-sm text-primary">$13,654</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-primary h-full w-[45%]"></div></div>
+                </div>
+            </div>
+
+            <div class="glass-card p-xl cyber-glow">
+                <h3 class="font-headline-sm text-headline-sm mb-md">Test Performance</h3>
+                <p class="font-body-md text-on-surface-variant mb-md">Out-of-sample backtesting reveals real-world robustness. Live portfolio charts compare growth against the buy-and-hold benchmark on 2020+ Bitcoin prices.</p>
+                <div class="space-y-md">
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Cuckoo Search</span>
+                        <span class="font-data-mono text-headline-sm text-secondary-container">$3,240</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary-container h-full w-[92%]"></div></div>
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Buy & Hold</span>
+                        <span class="font-data-mono text-headline-sm text-on-surface-variant">$3,516</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-on-surface-variant h-full w-[100%]"></div></div>
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Antlion Optimizer</span>
+                        <span class="font-data-mono text-headline-sm text-error">$1,887</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-error h-full w-[54%]"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-md">Comparison</h3>
+            <p class="font-body-md text-on-surface-variant mb-md">Single-sequence vs multi-segment test performance, visualized from the comparative chart.</p>
+            <img src="/image/single-sequence-vs-multi-segment.png" alt="Single-Sequence vs Multi-Segment Out-of-Sample Performance" class="w-full h-auto rounded-lg border border-outline-variant/20 shadow-lg" />
+            <p class="font-body-md text-on-surface-variant/80 mt-sm">Figure: Single-Sequence vs Multi-Segment out-of-sample performance.</p>
+        </div>
+
+        <div class="glass-card p-xl border-primary/20 bg-primary/5">
+            <h3 class="font-headline-sm text-headline-sm mb-md">Conclusions</h3>
+            <ul class="space-y-sm font-body-md text-on-surface-variant">
+                <li><strong>Design choice:</strong> A 14-dimensional composite signal allowed rich signal shaping while remaining computationally feasible.</li>
+                <li><strong>Algorithm selection:</strong> CS and ALO were chosen to probe global search and swarm strategies; SA provided a local refinement baseline.</li>
+                <li><strong>Experimentation:</strong> Iterating on parameter budgets and constraint settings highlighted trade-offs between evaluation cost and stability.</li>
+                <li><strong>Result interpretation:</strong> Training success does not guarantee test robustness; live-market comparisons show buy-and-hold can outperform some metaheuristics in the selected period.</li>
+                <li><strong>Academic takeaway:</strong> The project demonstrates how metaheuristic behavior must be assessed by both convergence and out-of-sample generalization.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Conclusions Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-lowest" id="conclusions">
+    <div class="max-w-screen-2xl mx-auto">
+        <div class="text-center mb-xl">
+            <h2 class="font-headline-md text-headline-md uppercase mb-md">Conclusions</h2>
+            <p class="font-body-md text-on-surface-variant">Summarized findings highlighting generalization, algorithm selection, and practical implications.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+            <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Key findings</h3>
+                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                    <li>Buy-and-hold excels in the bullish 2020+ test window, but its robustness is regime-dependent.</li>
+                    <li>SA often generalizes better than population-based methods when training overfits.</li>
+                    <li>CS shows superior multi-segment robustness thanks to Lévy-flight diversity.</li>
+                    <li>High/Low parameter constraints improved signal stability and reduced overfitting risk.</li>
+                </ul>
+            </div>
+            <div class="glass-card p-xl border-primary/20 bg-primary/5">
+                <h3 class="font-headline-sm text-headline-sm mb-sm">Practical implication</h3>
+                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                    <li>Out-of-sample evaluation is critical for algorithmic trading research.</li>
+                    <li>Training performance alone is insufficient to select live trading strategies.</li>
+                    <li>Algorithm comparison should include both convergence and generalization metrics.</li>
+                    <li>Visual evidence from charts provides the necessary support for these conclusions.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<!-- Footer -->
+<footer class="py-lg border-t border-outline-variant/30 bg-surface-container-lowest">
+    <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop gap-md max-w-screen-2xl mx-auto">
+        <div class="font-headline-sm text-headline-sm font-bold text-primary">AI Project</div>
+        <div class="flex gap-lg">
+            <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-secondary-fixed-dim transition-colors" href="#">Research</a>
+            <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-secondary-fixed-dim transition-colors" href="#">Code</a>
+            <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-secondary-fixed-dim transition-colors" href="#">Citation</a>
+        </div>
+        <div class="font-body-md text-body-md text-on-surface-variant text-center md:text-right">
+            © 2025 AI Project. Comparative Metaheuristic Analysis. All Rights Reserved.
+        </div>
+    </div>
+</footer>
+
+<script>
+    const navLinks = document.querySelectorAll('nav .nav-link');
+    const sections = Array.from(document.querySelectorAll('section[id]'));
+
+    function setActiveLink(targetId) {
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === `#${targetId}`) {
+                link.classList.add('text-secondary-fixed-dim', 'border-b-2', 'border-secondary-fixed-dim', 'pb-1');
+                link.classList.remove('text-on-surface-variant');
+            } else {
+                link.classList.remove('text-secondary-fixed-dim', 'border-b-2', 'border-secondary-fixed-dim', 'pb-1');
+                link.classList.add('text-on-surface-variant');
+            }
+        });
+    }
+
+    function updateActiveNav() {
+        const scrollPosition = window.scrollY + 120;
+        let currentSection = sections[0]?.id || '';
+
+        sections.forEach(section => {
+            if (section.offsetTop <= scrollPosition) {
+                currentSection = section.id;
+            }
+        });
+
+        setActiveLink(currentSection);
+    }
+
+    window.addEventListener('load', () => {
+        updateActiveNav();
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(updateActiveNav, 100);
+            });
+        });
+    });
+
+    window.addEventListener('scroll', updateActiveNav);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BTC 交易策略探索展示</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f7fa; color: #333; }
+      header { background: #203864; color: white; padding: 18px 24px; }
+      main { padding: 24px; max-width: 1100px; margin: auto; }
+      h1, h2 { margin-top: 0; }
+      .panel { background: white; border-radius: 10px; box-shadow: 0 12px 30px rgba(5, 35, 84, 0.08); margin-bottom: 24px; padding: 20px; }
+      .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+      label { display: block; margin-bottom: 8px; font-weight: 600; }
+      input[type="range"] { width: 100%; }
+      input[type="checkbox"] { margin-right: 8px; }
+      select, button { width: 100%; padding: 10px 12px; border: 1px solid #ced4da; border-radius: 8px; font-size: 1rem; }
+      button { background: #203864; color: white; cursor: pointer; border: none; }
+      button:hover { background: #162b48; }
+      .card { margin-top: 16px; padding: 16px; border: 1px solid #e1e5ea; border-radius: 10px; background: #fbfcfe; }
+      .row { display: flex; flex-wrap: wrap; gap: 16px; }
+      .row > div { flex: 1 1 320px; }
+      img { width: 100%; border-radius: 10px; }
+      .meta-list { list-style: none; margin: 0; padding: 0; }
+      .meta-list li { margin-bottom: 8px; }
+      .notice { color: #1f4e79; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>BTC 交易策略探索展示</h1>
+      <p>选择算法、是否限制 High/Low 组件，并实时执行回测与可视化。</p>
+    </header>
+    <main>
+      <section class="panel">
+        <h2>交互式演示控制面板</h2>
+        <form method="post">
+          <div class="form-grid">
+            <div>
+              <label for="method">选择优化方法</label>
+              <select id="method" name="method">
+                <option value="CS" {{ 'selected' if form.method == 'CS' else '' }}>Cuckoo Search (CS)</option>
+                <option value="ALO" {{ 'selected' if form.method == 'ALO' else '' }}>Antlion Optimizer (ALO)</option>
+                <option value="SA" {{ 'selected' if form.method == 'SA' else '' }}>Simulated Annealing (SA)</option>
+                <option value="RS" {{ 'selected' if form.method == 'RS' else '' }}>Random Search (RS)</option>
+              </select>
+            </div>
+            <div>
+              <label>限制 High Component</label>
+              <label><input type="checkbox" name="high_limit" {{ 'checked' if form.high_limit else '' }}> 启用</label>
+            </div>
+            <div>
+              <label>限制 Low Component</label>
+              <label><input type="checkbox" name="low_limit" {{ 'checked' if form.low_limit else '' }}> 启用</label>
+            </div>
+            <div>
+              <label for="budget">评估预算 (次数) : <strong>{{ form.budget }}</strong></label>
+              <input id="budget" type="range" name="budget" min="200" max="1200" step="50" value="{{ form.budget }}" />
+            </div>
+          </div>
+          <div style="margin-top: 18px;">
+            <button type="submit">执行算法并生成图表</button>
+          </div>
+        </form>
+      </section>
+
+      {% if result %}
+      <section class="panel">
+        <h2>运行结果</h2>
+        <div class="row">
+          <div class="card">
+            <ul class="meta-list">
+              <li><strong>算法:</strong> {{ result.algo_name }}</li>
+              <li><strong>训练集最佳价值:</strong> {{ result.best_fitness }}</li>
+              <li><strong>测试集最终价值:</strong> {{ result.test_value }}</li>
+              <li><strong>High 限制:</strong> {{ result.high_limit }}</li>
+              <li><strong>Low 限制:</strong> {{ result.low_limit }}</li>
+              <li><strong>评估次数:</strong> {{ result.budget }}</li>
+            </ul>
+            <p class="notice">{{ info }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>收敛过程</h2>
+        <img src="data:image/png;base64,{{ convergence_image }}" alt="收敛图" />
+      </section>
+
+      <section class="panel">
+        <h2>测试集组合价值曲线</h2>
+        <img src="data:image/png;base64,{{ portfolio_image }}" alt="组合曲线" />
+      </section>
+
+      <section class="panel">
+        <h2>High / Low 交易信号</h2>
+        <img src="data:image/png;base64,{{ signals_image }}" alt="交易信号图" />
+      </section>
+      {% endif %}
+    </main>
+  </body>
+</html>
