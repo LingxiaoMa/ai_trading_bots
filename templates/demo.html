@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>ALO-STACK | Interactive Algorithm Showcase</title>
+    <title>AI group project</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -109,6 +109,14 @@
         .cyber-glow {
             box-shadow: 0px 0px 20px rgba(255, 184, 116, 0.15);
         }
+        .selected-algo {
+            border: 2px solid rgba(56, 189, 248, 1);
+            background-color: rgba(56, 189, 248, 0.12);
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+        }
+        .selected-algo .material-symbols-outlined {
+            color: rgba(56, 189, 248, 1);
+        }
         .bitcoin-gradient-text {
             background: linear-gradient(90deg, #F7931A 0%, #ffb874 100%);
             -webkit-background-clip: text;
@@ -133,7 +141,7 @@
     <div class="max-w-screen-2xl mx-auto">
         <div class="mb-xl">
             <h1 class="font-display-lg text-display-lg font-extrabold mb-md uppercase tracking-tighter">
-                Interactive <span class="bitcoin-gradient-text">Algorithm Optimizer</span>
+                AI group project
             </h1>
             <p class="font-body-lg text-on-surface-variant">Configure your optimization parameters, select a metaheuristic, and watch real-time convergence analysis unfold. Generate trading signals and backtesting results instantly.</p>
         </div>
@@ -153,7 +161,7 @@
                 <div class="space-y-sm">
                     <label class="font-label-caps text-label-caps">SELECT ALGORITHM</label>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
-                        <label class="glass-card p-md cursor-pointer hover:border-secondary-container/50 transition">
+                        <label class="glass-card p-md cursor-pointer hover:border-secondary-container/50 transition algo-option {% if form.method == 'CS' %}selected-algo{% endif %}">
                             <input type="radio" name="method" value="CS" {% if form.method == 'CS' %}checked{% endif %} class="hidden">
                             <div class="flex items-center gap-sm">
                                 <span class="material-symbols-outlined text-secondary-container">auto_awesome</span>
@@ -161,7 +169,7 @@
                             </div>
                             <p class="font-body-md text-on-surface-variant text-sm mt-sm">Lévy Flights</p>
                         </label>
-                        <label class="glass-card p-md cursor-pointer hover:border-secondary/50 transition">
+                        <label class="glass-card p-md cursor-pointer hover:border-secondary/50 transition algo-option {% if form.method == 'ALO' %}selected-algo{% endif %}">
                             <input type="radio" name="method" value="ALO" {% if form.method == 'ALO' %}checked{% endif %} class="hidden">
                             <div class="flex items-center gap-sm">
                                 <span class="material-symbols-outlined text-secondary">hub</span>
@@ -169,7 +177,7 @@
                             </div>
                             <p class="font-body-md text-on-surface-variant text-sm mt-sm">Swarm Intel</p>
                         </label>
-                        <label class="glass-card p-md cursor-pointer hover:border-primary/50 transition">
+                        <label class="glass-card p-md cursor-pointer hover:border-primary/50 transition algo-option {% if form.method == 'SA' %}selected-algo{% endif %}">
                             <input type="radio" name="method" value="SA" {% if form.method == 'SA' %}checked{% endif %} class="hidden">
                             <div class="flex items-center gap-sm">
                                 <span class="material-symbols-outlined text-primary">thermostat</span>
@@ -177,7 +185,7 @@
                             </div>
                             <p class="font-body-md text-on-surface-variant text-sm mt-sm">Single-State</p>
                         </label>
-                        <label class="glass-card p-md cursor-pointer hover:border-error/50 transition">
+                        <label class="glass-card p-md cursor-pointer hover:border-error/50 transition algo-option {% if form.method == 'RS' %}selected-algo{% endif %}">
                             <input type="radio" name="method" value="RS" {% if form.method == 'RS' %}checked{% endif %} class="hidden">
                             <div class="flex items-center gap-sm">
                                 <span class="material-symbols-outlined text-error">shuffle</span>
@@ -315,6 +323,20 @@
         </div>
     </div>
 </footer>
+
+<script>
+    document.querySelectorAll('input[name="method"]').forEach((radio) => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.algo-option').forEach((label) => {
+                label.classList.remove('selected-algo');
+            });
+            const selectedLabel = radio.closest('label');
+            if (selectedLabel) {
+                selectedLabel.classList.add('selected-algo');
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
