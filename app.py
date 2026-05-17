@@ -1,13 +1,21 @@
 import os
-from flask import Flask, render_template, request, send_from_directory
+import json
+import numpy as np
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from trading_engine import (
     load_and_split_data,
     get_bounds,
-    choose_algorithm,
     evaluate_fitness,
-    plot_convergence,
-    plot_portfolio_curve,
-    plot_trade_signals,
+    evaluate_fitness_multi,
+    get_train_segments,
+    run_comparison,
+    evaluate_on_periods,
+    plot_combined_convergence,
+    plot_combined_backtest,
+    plot_single_vs_multi,
+    plot_stress_test,
+    plot_bh_range,
+    get_date_range_info,
     figure_to_base64,
 )
 
@@ -21,83 +29,158 @@ try:
     train_df, test_df = load_and_split_data()
     train_prices = train_df['close'].values.astype(float)
     test_prices = test_df['close'].values.astype(float)
+    train_segments, seg_labels = get_train_segments(train_df, train_prices)
 except Exception as e:
     print(f"Data loading error: {e}")
-    train_df = test_df = train_prices = test_prices = None
+    train_df = test_df = train_prices = test_prices = train_segments = None
+
+# In-memory store for cross-mode comparison
+stored_results = {}
+
 
 @app.route('/')
 def home():
-    """Main showcase page"""
     return render_template('showcase.html')
 
-@app.route('/demo', methods=['GET', 'POST'])
-def demo():
-    """Interactive demo page"""
-    result = None
-    convergence_image = None
-    portfolio_image = None
-    signals_image = None
-    error_msg = None
 
-    form = {
-        'method': 'CS',
-        'high_limit': False,
-        'low_limit': False,
-        'budget': 600,
+@app.route('/demo')
+def demo():
+    date_info = None
+    if train_df is not None and test_df is not None:
+        full_prices = np.concatenate([train_prices, test_prices])
+        full_dates = np.concatenate([train_df['date'].values, test_df['date'].values])
+        date_info = get_date_range_info(full_dates, full_prices)
+    return render_template('demo.html', date_info=date_info)
+
+
+@app.route('/api/compare', methods=['POST'])
+def api_compare():
+    if train_prices is None:
+        return jsonify({'error': 'Data not loaded'}), 500
+
+    data = request.get_json()
+    mode = data.get('mode', 'single')
+    high_limit = data.get('high_limit', False)
+    low_limit = data.get('low_limit', False)
+    budget = int(data.get('budget', 3000))
+
+    bounds = get_bounds(high_limit=high_limit, low_limit=low_limit)
+
+    if mode == 'multi':
+        def fitness_fn(p, prices):
+            return evaluate_fitness_multi(p, prices, train_segments)
+        mode_label = 'Multi-Segment Training'
+    else:
+        def fitness_fn(p, prices):
+            return evaluate_fitness(p, prices)
+        mode_label = 'Single-Segment Training'
+
+    results = run_comparison(train_prices, bounds, budget, fitness_fn)
+
+    # Evaluate on test set for each algorithm
+    test_vals = {}
+    for name, data in results.items():
+        test_val = evaluate_fitness(np.array(data['params']), test_prices)
+        test_vals[name] = float(test_val)
+        data['test'] = float(test_val)
+        data['gap_pct'] = round((data['train'] - test_val) / data['train'] * 100, 1) if data['train'] > 0 else 0
+
+    bh_value = float(1000.0 * test_prices[-1] / test_prices[0])
+
+    # Find best algorithm by test performance
+    best_algo = max(results.items(), key=lambda x: x[1]['test'])
+    best_algo_name = best_algo[0]
+
+    # Store for cross-mode comparison
+    store_key = 'single' if mode == 'single' else 'multi'
+    stored_results[store_key] = {
+        name: {'train': d['train'], 'test': d['test']} for name, d in results.items()
     }
 
-    if request.method == 'POST':
-        if train_prices is None or test_prices is None:
-            error_msg = "Data not loaded. Please ensure BTC-Daily.csv is in the project directory."
-            return render_template('demo.html', form=form, error_msg=error_msg)
+    # Generate comparison charts
+    conv_fig = plot_combined_convergence(results, budget, mode_label)
+    conv_img = figure_to_base64(conv_fig)
 
-        form['method'] = request.form.get('method', 'CS')
-        form['high_limit'] = request.form.get('high_limit') == 'on'
-        form['low_limit'] = request.form.get('low_limit') == 'on'
-        form['budget'] = int(request.form.get('budget', 600))
+    backtest_fig = plot_combined_backtest(results, test_df['date'].values, test_prices, bh_value, mode_label)
+    backtest_img = figure_to_base64(backtest_fig)
 
-        try:
-            bounds = get_bounds(high_limit=form['high_limit'], low_limit=form['low_limit'])
-            best_params, best_fitness, history = choose_algorithm(
-                form['method'], train_prices, bounds, form['budget']
-            )
+    # Multi-period stress test
+    period_defs = {
+        '2014-2016\nSideways': ('2014-01-01', '2017-01-01'),
+        '2017\nBull': ('2017-01-01', '2018-01-01'),
+        '2018\nBear': ('2018-01-01', '2019-01-01'),
+        '2019\nRecovery': ('2019-01-01', '2020-01-01'),
+        '2020-2022\nBig Bull': ('2020-01-01', '2022-03-02'),
+    }
+    full_dates = np.concatenate([train_df['date'].values, test_df['date'].values])
+    full_prices = np.concatenate([train_prices, test_prices])
+    stress_data = {}
+    for name, data in results.items():
+        stress_data[name] = evaluate_on_periods(np.array(data['params']), full_prices, full_dates, period_defs)
+    stress_fig = plot_stress_test(stress_data, mode_label)
+    stress_img = figure_to_base64(stress_fig)
 
-            test_value = evaluate_fitness(best_params, test_prices)
-            method_name = {
-                'CS': 'Cuckoo Search',
-                'SA': 'Simulated Annealing',
-                'ALO': 'Antlion Optimizer',
-                'RS': 'Random Search',
-            }.get(form['method'], form['method'])
+    # Single vs Multi comparison chart (if both modes exist)
+    compare_img = None
+    has_comparison = 'single' in stored_results and 'multi' in stored_results
+    if has_comparison:
+        compare_fig = plot_single_vs_multi(stored_results['single'], stored_results['multi'], bh_value)
+        compare_img = figure_to_base64(compare_fig)
 
-            result = {
-                'algo_name': method_name,
-                'best_fitness': f'${best_fitness:,.2f}',
-                'test_value': f'${test_value:,.2f}',
-                'budget': form['budget'],
-                'high_limit': 'Enabled' if form['high_limit'] else 'Disabled',
-                'low_limit': 'Enabled' if form['low_limit'] else 'Disabled',
-            }
+    return jsonify({
+        'mode': mode,
+        'mode_label': mode_label,
+        'results': results,
+        'test_vals': test_vals,
+        'bh_value': round(bh_value, 2),
+        'best_algo': best_algo_name,
+        'convergence_image': conv_img,
+        'backtest_image': backtest_img,
+        'stress_test_image': stress_img,
+        'compare_image': compare_img,
+        'has_comparison': has_comparison,
+    })
 
-            convergence_image = figure_to_base64(plot_convergence(history, method_name))
-            portfolio_image = figure_to_base64(
-                plot_portfolio_curve(best_params, test_df['date'].values, test_prices, method_name)
-            )
-            signals_image = figure_to_base64(
-                plot_trade_signals(best_params, test_df['date'].values, test_prices, method_name)
-            )
-        except Exception as e:
-            error_msg = f"Algorithm execution error: {str(e)}"
 
-    return render_template(
-        'demo.html',
-        form=form,
-        result=result,
-        convergence_image=convergence_image,
-        portfolio_image=portfolio_image,
-        signals_image=signals_image,
-        error_msg=error_msg,
-    )
+@app.route('/api/bh_range', methods=['POST'])
+def api_bh_range():
+    if train_prices is None:
+        return jsonify({'error': 'Data not loaded'}), 500
+
+    data = request.get_json()
+    start_date = data.get('start_date')
+    end_date = data.get('end_date')
+    algo_results = data.get('algo_results', {})
+    best_algo = data.get('best_algo', '')
+
+    full_dates = np.concatenate([train_df['date'].values, test_df['date'].values])
+    full_prices = np.concatenate([train_prices, test_prices])
+    start_dt = np.datetime64(start_date)
+    end_dt = np.datetime64(end_date)
+
+    mask = (full_dates >= start_dt) & (full_dates <= end_dt)
+    if mask.sum() < 2:
+        return jsonify({'error': 'Selected range too short'}), 400
+
+    seg_prices = full_prices[mask]
+    bh_final = float(1000.0 * seg_prices[-1] / seg_prices[0])
+
+    # Calculate algo values for this range
+    algo_range_vals = {}
+    for name, d in algo_results.items():
+        params = np.array(d['params'])
+        val = evaluate_fitness(params, seg_prices)
+        algo_range_vals[name] = float(val)
+
+    fig = plot_bh_range(full_dates, full_prices, start_dt, end_dt, algo_results, best_algo)
+    img = figure_to_base64(fig) if fig else None
+
+    return jsonify({
+        'bh_final': bh_final,
+        'algo_range_vals': algo_range_vals,
+        'image': img,
+    })
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

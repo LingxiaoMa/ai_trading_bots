@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>AI group project</title>
+    <title>AI Trading Bots — Comparison Workbench</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
+    <script>
         tailwind.config = {
           darkMode: "class",
           theme: {
@@ -109,22 +109,67 @@
         .cyber-glow {
             box-shadow: 0px 0px 20px rgba(255, 184, 116, 0.15);
         }
-        .selected-algo {
-            border: 2px solid rgba(56, 189, 248, 1);
-            background-color: rgba(56, 189, 248, 0.12);
-            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+        .mode-active {
+            background: rgba(247, 147, 26, 0.2);
+            border: 2px solid #f7931a;
+            box-shadow: 0 0 15px rgba(247, 147, 26, 0.2);
         }
-        .selected-algo .material-symbols-outlined {
-            color: rgba(56, 189, 248, 1);
+        .mode-inactive {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            opacity: 0.55;
         }
-        .bitcoin-gradient-text {
-            background: linear-gradient(90deg, #F7931A 0%, #ffb874 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .pulse-glow {
+            animation: pulseGlow 1.8s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(247, 147, 26, 0.1); }
+            50% { box-shadow: 0 0 30px rgba(247, 147, 26, 0.35); }
+        }
+        /* Range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            height: 6px;
+            background: linear-gradient(90deg, #14202f, #f7931a);
+            border-radius: 3px;
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            background: #f7931a;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(247, 147, 26, 0.4);
+        }
+        /* Toggle switch */
+        .toggle-track {
+            width: 48px;
+            height: 26px;
+            border-radius: 13px;
+            transition: background 0.25s;
+        }
+        .toggle-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transition: transform 0.25s;
+        }
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid #f7931a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body-md overflow-x-hidden selection:bg-primary selection:text-on-primary">
+
 <!-- TopNavBar -->
 <nav class="fixed top-0 z-50 w-full bg-background/70 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(255,184,116,0.05)]">
     <div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-screen-2xl mx-auto">
@@ -136,181 +181,194 @@
 </nav>
 
 <main class="pt-20">
-<!-- Hero Section -->
 <section class="py-xl px-margin-mobile md:px-margin-desktop">
-    <div class="max-w-screen-2xl mx-auto">
-        <div class="mb-xl">
-            <h1 class="font-display-lg text-display-lg font-extrabold mb-md uppercase tracking-tighter">
-                AI group project
-            </h1>
-            <p class="font-body-lg text-on-surface-variant">Configure your optimization parameters, select a metaheuristic, and watch real-time convergence analysis unfold. Generate trading signals and backtesting results instantly.</p>
-        </div>
+<div class="max-w-screen-2xl mx-auto">
 
-        <!-- Control Panel -->
-        <div class="glass-card p-xl cyber-glow mb-xl">
-            <h2 class="font-headline-sm text-headline-sm mb-lg">Configuration Panel</h2>
-            
-            {% if error_msg %}
-            <div class="bg-error/10 border border-error/30 rounded-lg p-md mb-lg">
-                <p class="font-body-md text-error">⚠ {{ error_msg }}</p>
-            </div>
-            {% endif %}
-
-            <form method="post" class="space-y-lg">
-                <!-- Algorithm Selection -->
-                <div class="space-y-sm">
-                    <label class="font-label-caps text-label-caps">SELECT ALGORITHM</label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
-                        <label class="glass-card p-md cursor-pointer hover:border-secondary-container/50 transition algo-option {% if form.method == 'CS' %}selected-algo{% endif %}">
-                            <input type="radio" name="method" value="CS" {% if form.method == 'CS' %}checked{% endif %} class="hidden">
-                            <div class="flex items-center gap-sm">
-                                <span class="material-symbols-outlined text-secondary-container">auto_awesome</span>
-                                <span class="font-headline-sm">Cuckoo Search</span>
-                            </div>
-                            <p class="font-body-md text-on-surface-variant text-sm mt-sm">Lévy Flights</p>
-                        </label>
-                        <label class="glass-card p-md cursor-pointer hover:border-secondary/50 transition algo-option {% if form.method == 'ALO' %}selected-algo{% endif %}">
-                            <input type="radio" name="method" value="ALO" {% if form.method == 'ALO' %}checked{% endif %} class="hidden">
-                            <div class="flex items-center gap-sm">
-                                <span class="material-symbols-outlined text-secondary">hub</span>
-                                <span class="font-headline-sm">Antlion</span>
-                            </div>
-                            <p class="font-body-md text-on-surface-variant text-sm mt-sm">Swarm Intel</p>
-                        </label>
-                        <label class="glass-card p-md cursor-pointer hover:border-primary/50 transition algo-option {% if form.method == 'SA' %}selected-algo{% endif %}">
-                            <input type="radio" name="method" value="SA" {% if form.method == 'SA' %}checked{% endif %} class="hidden">
-                            <div class="flex items-center gap-sm">
-                                <span class="material-symbols-outlined text-primary">thermostat</span>
-                                <span class="font-headline-sm">Annealing</span>
-                            </div>
-                            <p class="font-body-md text-on-surface-variant text-sm mt-sm">Single-State</p>
-                        </label>
-                        <label class="glass-card p-md cursor-pointer hover:border-error/50 transition algo-option {% if form.method == 'RS' %}selected-algo{% endif %}">
-                            <input type="radio" name="method" value="RS" {% if form.method == 'RS' %}checked{% endif %} class="hidden">
-                            <div class="flex items-center gap-sm">
-                                <span class="material-symbols-outlined text-error">shuffle</span>
-                                <span class="font-headline-sm">Random</span>
-                            </div>
-                            <p class="font-body-md text-on-surface-variant text-sm mt-sm">Baseline</p>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Constraints -->
-                <div class="space-y-sm">
-                    <label class="font-label-caps text-label-caps">PARAMETER CONSTRAINTS</label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
-                        <label class="glass-card p-md flex items-center gap-sm cursor-pointer hover:border-primary/50 transition">
-                            <input type="checkbox" name="high_limit" {% if form.high_limit %}checked{% endif %} class="w-5 h-5">
-                            <div>
-                                <p class="font-headline-sm">Limit HIGH Component</p>
-                                <p class="font-body-md text-on-surface-variant text-sm">Reduce fast window sizes</p>
-                            </div>
-                        </label>
-                        <label class="glass-card p-md flex items-center gap-sm cursor-pointer hover:border-primary/50 transition">
-                            <input type="checkbox" name="low_limit" {% if form.low_limit %}checked{% endif %} class="w-5 h-5">
-                            <div>
-                                <p class="font-headline-sm">Limit LOW Component</p>
-                                <p class="font-body-md text-on-surface-variant text-sm">Reduce slow window sizes</p>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Budget Slider -->
-                <div class="space-y-sm">
-                    <div class="flex justify-between">
-                        <label class="font-label-caps text-label-caps">EVALUATION BUDGET</label>
-                        <span class="font-data-mono text-primary text-headline-sm">{{ form.budget }} EVALS</span>
-                    </div>
-                    <input type="range" name="budget" min="200" max="1200" step="50" value="{{ form.budget }}" class="w-full" />
-                    <div class="grid grid-cols-3 gap-sm text-sm">
-                        <span class="font-data-mono text-on-surface-variant text-left">200 (Quick)</span>
-                        <span class="font-data-mono text-on-surface-variant text-center">600 (Standard)</span>
-                        <span class="font-data-mono text-on-surface-variant text-right">1200 (Deep)</span>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="w-full bg-primary text-on-primary font-headline-sm text-headline-sm py-md rounded-lg hover:shadow-[0_0_30px_rgba(247,147,26,0.3)] transition-all active:scale-95">
-                    <span class="flex items-center justify-center gap-sm">
-                        <span class="material-symbols-outlined">play_circle</span>
-                        RUN OPTIMIZATION
-                    </span>
-                </button>
-            </form>
-        </div>
-
-        <!-- Results Section -->
-        {% if result %}
-        <div class="space-y-lg">
-            <!-- Result Summary -->
-            <div class="glass-card p-xl cyber-glow">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-md">
-                    <div>
-                        <p class="font-label-caps text-on-surface-variant mb-sm">Algorithm</p>
-                        <p class="font-headline-sm text-secondary-container">{{ result.algo_name }}</p>
-                    </div>
-                    <div>
-                        <p class="font-label-caps text-on-surface-variant mb-sm">Training Best</p>
-                        <p class="font-headline-sm text-primary">{{ result.best_fitness }}</p>
-                    </div>
-                    <div>
-                        <p class="font-label-caps text-on-surface-variant mb-sm">Test Final</p>
-                        <p class="font-headline-sm text-secondary-container">{{ result.test_value }}</p>
-                    </div>
-                    <div>
-                        <p class="font-label-caps text-on-surface-variant mb-sm">Evaluations</p>
-                        <p class="font-data-mono text-headline-sm">{{ result.budget }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Convergence Chart -->
-            <div class="glass-card p-xl">
-                <h2 class="font-headline-sm text-headline-sm mb-md">Convergence Trajectory</h2>
-                <img src="data:image/png;base64,{{ convergence_image }}" alt="Convergence" class="w-full rounded-lg" />
-                <p class="font-body-md text-on-surface-variant mt-md">Training phase optimization showing best fitness value improving across iterations. Evaluates on 4-segment Bitcoin history (2014-2019).</p>
-            </div>
-
-            <!-- Portfolio Curve -->
-            <div class="glass-card p-xl">
-                <h2 class="font-headline-sm text-headline-sm mb-md">Out-of-Sample Backtest (2020+)</h2>
-                <img src="data:image/png;base64,{{ portfolio_image }}" alt="Portfolio" class="w-full rounded-lg" />
-                <p class="font-body-md text-on-surface-variant mt-md">Deployment of optimized parameters on unseen market data. Comparison with Buy & Hold passive baseline strategy.</p>
-            </div>
-
-            <!-- Trading Signals -->
-            <div class="glass-card p-xl">
-                <h2 class="font-headline-sm text-headline-sm mb-md">Trading Signal Analysis</h2>
-                <img src="data:image/png;base64,{{ signals_image }}" alt="Signals" class="w-full rounded-lg" />
-                <p class="font-body-md text-on-surface-variant mt-md">HIGH composite line (fast EMA/SMA/LMA blend) vs. LOW composite line (slow blend). Green triangles: buy signals. Red triangles: sell signals.</p>
-            </div>
-
-            <!-- Insights -->
-            <div class="glass-card p-xl border-primary/20 bg-primary/5">
-                <h3 class="font-headline-sm text-headline-sm mb-md flex items-center gap-sm">
-                    <span class="material-symbols-outlined text-primary">info</span>
-                    Interpretation Guide
-                </h3>
-                <ul class="space-y-sm font-body-md text-on-surface-variant">
-                    <li class="flex gap-sm">
-                        <span class="text-primary font-bold">→</span>
-                        <span><strong class="text-on-surface">Convergence Graph:</strong> Shows whether algorithm explores early (flat start) vs. exploits later (steep improvement).</span>
-                    </li>
-                    <li class="flex gap-sm">
-                        <span class="text-primary font-bold">→</span>
-                        <span><strong class="text-on-surface">Portfolio Curve:</strong> Out-of-sample generalization test. High training value may not translate to test performance.</span>
-                    </li>
-                    <li class="flex gap-sm">
-                        <span class="text-primary font-bold">→</span>
-                        <span><strong class="text-on-surface">Signal Timing:</strong> Frequency and clustering of buy/sell signals reveal strategy risk. More signals = higher fee drag.</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        {% endif %}
+    <!-- Hero -->
+    <div class="mb-xl">
+        <h1 class="font-display-lg text-display-lg font-extrabold mb-md uppercase tracking-tighter">
+            Interactive Comparison Workbench
+        </h1>
+        <p class="font-body-lg text-on-surface-variant">Run all four algorithms simultaneously — CS, ALO, SA, and PSO. Toggle training modes, adjust constraints, and explore how market regime changes everything.</p>
     </div>
+
+    <!-- ==================== CONTROL PANEL ==================== -->
+    <div class="glass-card p-xl cyber-glow mb-xl" id="control-panel">
+        <h2 class="font-headline-sm text-headline-sm mb-lg">Configuration Panel</h2>
+
+        <!-- Mode Toggle -->
+        <div class="mb-lg">
+            <label class="font-label-caps text-label-caps block mb-sm">TRAINING MODE</label>
+            <div class="flex gap-md">
+                <button id="mode-single" onclick="setMode('single')"
+                    class="mode-active flex-1 p-md rounded-lg text-center transition-all duration-200">
+                    <span class="material-symbols-outlined text-lg">looks_one</span>
+                    <p class="font-headline-sm mt-sm">Single-Segment</p>
+                    <p class="font-body-md text-on-surface-variant text-sm">Full training history as one</p>
+                </button>
+                <button id="mode-multi" onclick="setMode('multi')"
+                    class="mode-inactive flex-1 p-md rounded-lg text-center transition-all duration-200">
+                    <span class="material-symbols-outlined text-lg">grid_view</span>
+                    <p class="font-headline-sm mt-sm">Multi-Segment</p>
+                    <p class="font-body-md text-on-surface-variant text-sm">4 market regimes averaged</p>
+                </button>
+            </div>
+            <p class="font-body-md text-on-surface-variant text-sm mt-sm" id="mode-hint">
+                Single-segment: optimizes on the entire pre-2020 dataset. Multi-segment: evaluates across 4 distinct market regimes (sideways, bull, bear, recovery) and optimizes the average.
+            </p>
+        </div>
+
+        <!-- Constraints -->
+        <div class="mb-lg">
+            <label class="font-label-caps text-label-caps block mb-sm">PARAMETER CONSTRAINTS</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                <label class="glass-card p-md flex items-center gap-sm cursor-pointer hover:border-primary/50 transition">
+                    <input type="checkbox" id="high-limit" class="w-5 h-5 accent-primary">
+                    <div>
+                        <p class="font-headline-sm">Limit FAST Component</p>
+                        <p class="font-body-md text-on-surface-variant text-sm">Fast windows 2→20 (regularization)</p>
+                    </div>
+                </label>
+                <label class="glass-card p-md flex items-center gap-sm cursor-pointer hover:border-primary/50 transition">
+                    <input type="checkbox" id="low-limit" class="w-5 h-5 accent-primary">
+                    <div>
+                        <p class="font-headline-sm">Limit SLOW Component</p>
+                        <p class="font-body-md text-on-surface-variant text-sm">Slow windows 21→60 (regularization)</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Budget Slider -->
+        <div class="mb-lg">
+            <div class="flex justify-between mb-sm">
+                <label class="font-label-caps text-label-caps">EVALUATION BUDGET</label>
+                <span class="font-data-mono text-primary text-headline-sm" id="budget-display">3000 EVALS</span>
+            </div>
+            <input type="range" id="budget-slider" min="500" max="9000" step="250" value="3000"
+                oninput="document.getElementById('budget-display').textContent = this.value + ' EVALS'"/>
+            <div class="grid grid-cols-3 gap-sm text-sm mt-sm">
+                <span class="font-data-mono text-on-surface-variant text-left">500 (Quick)</span>
+                <span class="font-data-mono text-on-surface-variant text-center">3000 (Standard)</span>
+                <span class="font-data-mono text-on-surface-variant text-right">9000 (Deep)</span>
+            </div>
+        </div>
+
+        <!-- Run Button + Loading -->
+        <div class="flex items-center gap-md">
+            <button id="run-btn" onclick="runComparison()"
+                class="flex-1 bg-primary text-on-primary font-headline-sm text-headline-sm py-md rounded-lg hover:shadow-[0_0_30px_rgba(247,147,26,0.3)] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="flex items-center justify-center gap-sm">
+                    <span class="material-symbols-outlined">play_circle</span>
+                    RUN COMPARISON (ALL 4 ALGORITHMS)
+                </span>
+            </button>
+            <div id="loading-indicator" class="hidden flex items-center gap-sm">
+                <div class="spinner"></div>
+                <span class="font-data-mono text-primary text-sm">Running CS, ALO, SA, PSO...</span>
+            </div>
+        </div>
+        <div id="run-status" class="mt-sm font-data-mono text-on-surface-variant text-sm hidden"></div>
+    </div>
+
+    <!-- ==================== RESULTS AREA ==================== -->
+    <div id="results-area" class="hidden space-y-lg">
+
+        <!-- Title bar showing what was run -->
+        <div class="flex items-center gap-md" id="results-header">
+            <span class="font-label-caps text-secondary-container" id="results-mode-badge"></span>
+            <span class="font-data-mono text-on-surface-variant text-sm" id="results-budget-badge"></span>
+            <span class="font-data-mono text-on-surface-variant text-sm" id="results-constraint-badge"></span>
+        </div>
+
+        <!-- Summary Table -->
+        <div class="glass-card p-xl cyber-glow overflow-x-auto">
+            <h2 class="font-headline-sm text-headline-sm mb-md">Summary Comparison</h2>
+            <table class="w-full text-left border-collapse" id="summary-table">
+                <thead>
+                    <tr class="font-label-caps text-on-surface-variant text-sm border-b border-white/10">
+                        <th class="py-sm px-md">Metric</th>
+                        <th class="py-sm px-md">Cuckoo Search</th>
+                        <th class="py-sm px-md">Antlion Optimizer</th>
+                        <th class="py-sm px-md">Simulated Annealing</th>
+                        <th class="py-sm px-md">Particle Swarm Optimisation</th>
+                        <th class="py-sm px-md">Buy & Hold</th>
+                    </tr>
+                </thead>
+                <tbody class="font-data-mono text-sm" id="summary-body">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Convergence -->
+        <div class="glass-card p-xl">
+            <h2 class="font-headline-sm text-headline-sm mb-md">Convergence Trajectories</h2>
+            <img id="conv-img" src="" alt="Convergence" class="w-full rounded-lg"/>
+            <p class="font-body-md text-on-surface-variant mt-md">All four algorithms on the same evaluation budget. Higher training fitness may indicate overfitting — wait for the backtest.</p>
+        </div>
+
+        <!-- Backtest -->
+        <div class="glass-card p-xl">
+            <h2 class="font-headline-sm text-headline-sm mb-md">Out-of-Sample Backtest (2020+)</h2>
+            <img id="backtest-img" src="" alt="Backtest" class="w-full rounded-lg"/>
+            <p class="font-body-md text-on-surface-variant mt-md">Same optimized parameters, deployed on unseen test data. Which algorithm generalized? Which overfit?</p>
+        </div>
+
+        <!-- Stress Test -->
+        <div class="glass-card p-xl">
+            <h2 class="font-headline-sm text-headline-sm mb-md">Multi-Period Stress Test</h2>
+            <img id="stress-img" src="" alt="Stress Test" class="w-full rounded-lg"/>
+            <p class="font-body-md text-on-surface-variant mt-md">Same strategy evaluated across 5 distinct market regimes. Buy & Hold dominates in bull markets but collapses in 2018 bear.</p>
+        </div>
+
+        <!-- Single vs Multi Comparison (appears when both modes have been run) -->
+        <div class="glass-card p-xl hidden" id="compare-section">
+            <h2 class="font-headline-sm text-headline-sm mb-md">Single-Segment vs Multi-Segment: Test Performance</h2>
+            <img id="compare-img" src="" alt="Single vs Multi" class="w-full rounded-lg"/>
+            <p class="font-body-md text-on-surface-variant mt-md">Switch between training modes and re-run to populate this comparison. Multi-segment reduces overfitting by forcing generalization across market regimes.</p>
+        </div>
+
+        <!-- ==================== B&H DATE RANGE EXPLORER ==================== -->
+        <div class="glass-card p-xl cyber-glow" id="bh-explorer">
+            <h2 class="font-headline-sm text-headline-sm mb-sm flex items-center gap-sm">
+                <span class="material-symbols-outlined text-primary">date_range</span>
+                Buy & Hold Date Range Explorer
+            </h2>
+            <p class="font-body-md text-on-surface-variant mb-lg">Drag the sliders to select any time window. B&H performance is entirely determined by your chosen interval — this is Conclusion #1 in one interaction.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-md">
+                <div>
+                    <label class="font-label-caps text-label-caps block mb-sm">START DATE</label>
+                    <input type="date" id="bh-start" class="w-full bg-surface-container border border-white/10 rounded-lg p-sm text-on-surface font-data-mono"
+                        onchange="updateBHRange()"/>
+                </div>
+                <div>
+                    <label class="font-label-caps text-label-caps block mb-sm">END DATE</label>
+                    <input type="date" id="bh-end" class="w-full bg-surface-container border border-white/10 rounded-lg p-sm text-on-surface font-data-mono"
+                        onchange="updateBHRange()"/>
+                </div>
+            </div>
+
+            <!-- Quick presets -->
+            <div class="flex flex-wrap gap-sm mb-lg">
+                <button onclick="setBHPreset('2014-11-28','2016-12-31')" class="px-md py-sm glass-card font-data-mono text-xs hover:border-primary/50 transition">2014-16 Sideways</button>
+                <button onclick="setBHPreset('2017-01-01','2017-12-31')" class="px-md py-sm glass-card font-data-mono text-xs hover:border-primary/50 transition">2017 Bull</button>
+                <button onclick="setBHPreset('2018-01-01','2018-12-31')" class="px-md py-sm glass-card font-data-mono text-xs hover:border-primary/50 transition">2018 Bear</button>
+                <button onclick="setBHPreset('2019-01-01','2019-12-31')" class="px-md py-sm glass-card font-data-mono text-xs hover:border-primary/50 transition">2019 Recovery</button>
+                <button onclick="setBHPreset('2020-01-01','2022-03-01')" class="px-md py-sm glass-card font-data-mono text-xs hover:border-primary/50 transition">2020-22 Big Bull</button>
+            </div>
+
+            <div id="bh-range-result" class="hidden">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-lg" id="bh-range-metrics"></div>
+                <img id="bh-range-img" src="" alt="BH Range" class="w-full rounded-lg"/>
+            </div>
+            <p class="font-body-md text-on-surface-variant text-sm mt-sm" id="bh-range-empty">
+                Select a date range above to compare B&H against your optimized strategies.
+            </p>
+        </div>
+    </div>
+
+</div>
 </section>
 </main>
 
@@ -319,23 +377,198 @@
     <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop gap-md max-w-screen-2xl mx-auto">
         <a href="/" class="font-headline-sm text-headline-sm font-bold text-primary hover:opacity-80">ALO-STACK</a>
         <div class="font-body-md text-body-md text-on-surface-variant">
-            © 2025 ALO-STACK. Interactive Metaheuristic Comparison.
+            Interactive Metaheuristic Comparison Workbench
         </div>
     </div>
 </footer>
 
 <script>
-    document.querySelectorAll('input[name="method"]').forEach((radio) => {
-        radio.addEventListener('change', () => {
-            document.querySelectorAll('.algo-option').forEach((label) => {
-                label.classList.remove('selected-algo');
-            });
-            const selectedLabel = radio.closest('label');
-            if (selectedLabel) {
-                selectedLabel.classList.add('selected-algo');
-            }
+// ---- State ----
+let currentMode = 'single';
+let lastResults = null;
+let lastMode = null;
+let bhRangeTimeout = null;
+
+// ---- Mode Toggle ----
+function setMode(mode) {
+    currentMode = mode;
+    const singleBtn = document.getElementById('mode-single');
+    const multiBtn = document.getElementById('mode-multi');
+    const hint = document.getElementById('mode-hint');
+
+    if (mode === 'single') {
+        singleBtn.className = 'mode-active flex-1 p-md rounded-lg text-center transition-all duration-200';
+        multiBtn.className = 'mode-inactive flex-1 p-md rounded-lg text-center transition-all duration-200';
+        hint.textContent = 'Single-segment: optimizes on the entire pre-2020 dataset. Best training fitness, higher overfitting risk.';
+    } else {
+        multiBtn.className = 'mode-active flex-1 p-md rounded-lg text-center transition-all duration-200';
+        singleBtn.className = 'mode-inactive flex-1 p-md rounded-lg text-center transition-all duration-200';
+        hint.textContent = 'Multi-segment: evaluates across 4 distinct market regimes (sideways, bull, bear, recovery) and optimizes the average. Lower training fitness, better generalization.';
+    }
+}
+
+// ---- Run Comparison ----
+async function runComparison() {
+    const runBtn = document.getElementById('run-btn');
+    const loading = document.getElementById('loading-indicator');
+    const status = document.getElementById('run-status');
+    const resultsArea = document.getElementById('results-area');
+
+    runBtn.disabled = true;
+    loading.classList.remove('hidden');
+    status.classList.remove('hidden');
+    status.textContent = 'Initializing...';
+
+    const payload = {
+        mode: currentMode,
+        high_limit: document.getElementById('high-limit').checked,
+        low_limit: document.getElementById('low-limit').checked,
+        budget: parseInt(document.getElementById('budget-slider').value),
+    };
+
+    try {
+        status.textContent = 'Running Cuckoo Search, Antlion Optimizer, Simulated Annealing, and Particle Swarm Optimisation...';
+        const resp = await fetch('/api/compare', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload),
         });
-    });
+        if (!resp.ok) {
+            const err = await resp.json();
+            throw new Error(err.error || 'Request failed');
+        }
+        const data = await resp.json();
+        lastResults = data;
+        lastMode = data.mode;
+        renderResults(data);
+        status.textContent = 'Done. Switch training mode and run again to see the comparison.';
+        setTimeout(() => { status.classList.add('hidden'); }, 4000);
+    } catch (e) {
+        status.textContent = 'Error: ' + e.message;
+    } finally {
+        runBtn.disabled = false;
+        loading.classList.add('hidden');
+    }
+}
+
+// ---- Render Results ----
+function renderResults(data) {
+    document.getElementById('results-area').classList.remove('hidden');
+    document.getElementById('results-mode-badge').textContent = data.mode_label;
+    document.getElementById('results-budget-badge').textContent = 'Budget: ' + (data.results['Cuckoo Search'] ? 'per algo' : '');
+    document.getElementById('results-constraint-badge').textContent = '';
+
+    // Summary table
+    const tbody = document.getElementById('summary-body');
+    const algoOrder = ['Cuckoo Search', 'Antlion Optimizer', 'Simulated Annealing', 'Particle Swarm Optimisation'];
+    const metrics = [
+        {key: 'train', label: 'Training Best', format: v => '$' + v.toLocaleString(undefined, {maximumFractionDigits: 0})},
+        {key: 'test', label: 'Test Final', format: v => '$' + v.toLocaleString(undefined, {maximumFractionDigits: 0})},
+        {key: 'gap_pct', label: 'Overfit Gap %', format: v => v.toFixed(1) + '%'},
+    ];
+
+    let html = '';
+    for (const m of metrics) {
+        html += '<tr class="border-b border-white/5">';
+        html += '<td class="py-sm px-md font-label-caps text-on-surface-variant">' + m.label + '</td>';
+        for (const algo of algoOrder) {
+            const d = data.results[algo];
+            const val = m.key === 'gap_pct' ? (d.gap_pct || 0) : (d[m.key] || 0);
+            const colorClass = algo === data.best_algo ? 'text-primary' : 'text-on-surface';
+            html += '<td class="py-sm px-md ' + colorClass + '">' + m.format(val) + '</td>';
+        }
+        html += '<td class="py-sm px-md text-on-surface-variant">' + (m.key === 'train' ? 'N/A' : (m.key === 'test' ? '$' + data.bh_value.toLocaleString(undefined, {maximumFractionDigits: 0}) : '—')) + '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+
+    // Charts
+    document.getElementById('conv-img').src = 'data:image/png;base64,' + data.convergence_image;
+    document.getElementById('backtest-img').src = 'data:image/png;base64,' + data.backtest_image;
+    document.getElementById('stress-img').src = 'data:image/png;base64,' + data.stress_test_image;
+
+    // Single vs Multi comparison
+    const compareSection = document.getElementById('compare-section');
+    if (data.has_comparison && data.compare_image) {
+        compareSection.classList.remove('hidden');
+        document.getElementById('compare-img').src = 'data:image/png;base64,' + data.compare_image;
+    }
+
+    // Update BH range explorer date inputs if needed
+    if (document.getElementById('bh-start').value === '') {
+        document.getElementById('bh-start').value = data.date_info ? data.date_info.min_date : '2014-11-28';
+        document.getElementById('bh-end').value = data.date_info ? data.date_info.max_date : '2022-03-01';
+    }
+
+    document.getElementById('results-area').scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+// ---- B&H Date Range Explorer ----
+function setBHPreset(start, end) {
+    document.getElementById('bh-start').value = start;
+    document.getElementById('bh-end').value = end;
+    updateBHRange();
+}
+
+async function updateBHRange() {
+    const start = document.getElementById('bh-start').value;
+    const end = document.getElementById('bh-end').value;
+    if (!start || !end || start >= end) return;
+
+    if (!lastResults) {
+        // No algorithms run yet — show B&H only
+        document.getElementById('bh-range-empty').classList.add('hidden');
+        document.getElementById('bh-range-result').classList.remove('hidden');
+        document.getElementById('bh-range-metrics').innerHTML = '<p class="font-body-md text-on-surface-variant">Run a comparison first to see algorithm performance against B&H.</p>';
+        document.getElementById('bh-range-img').src = '';
+        return;
+    }
+
+    document.getElementById('bh-range-empty').classList.add('hidden');
+    document.getElementById('bh-range-result').classList.remove('hidden');
+
+    try {
+        const resp = await fetch('/api/bh_range', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                start_date: start,
+                end_date: end,
+                algo_results: lastResults.results,
+                best_algo: lastResults.best_algo,
+            }),
+        });
+        const data = await resp.json();
+
+        if (data.error) {
+            document.getElementById('bh-range-metrics').innerHTML = '<p class="text-error">' + data.error + '</p>';
+            return;
+        }
+
+        // Metrics
+        const algoOrder = ['Cuckoo Search', 'Antlion Optimizer', 'Simulated Annealing', 'Particle Swarm Optimisation'];
+        let metricHTML = '<div class="glass-card p-md"><p class="font-label-caps text-on-surface-variant mb-sm">Buy & Hold</p><p class="font-headline-sm text-on-surface">$' + data.bh_final.toLocaleString(undefined, {maximumFractionDigits: 0}) + '</p></div>';
+        for (const algo of algoOrder) {
+            const v = data.algo_range_vals[algo] || 0;
+            metricHTML += '<div class="glass-card p-md"><p class="font-label-caps text-on-surface-variant mb-sm">' + algo + '</p><p class="font-headline-sm ' + (algo === lastResults.best_algo ? 'text-primary' : 'text-on-surface') + '">$' + v.toLocaleString(undefined, {maximumFractionDigits: 0}) + '</p></div>';
+        }
+        document.getElementById('bh-range-metrics').innerHTML = metricHTML;
+
+        if (data.image) {
+            document.getElementById('bh-range-img').src = 'data:image/png;base64,' + data.image;
+        }
+    } catch (e) {
+        console.error('BH range error:', e);
+    }
+}
+
+// ---- Init ----
+document.addEventListener('DOMContentLoaded', () => {
+    {% if date_info %}
+    document.getElementById('bh-start').value = '{{ date_info.min_date }}';
+    document.getElementById('bh-end').value = '{{ date_info.max_date }}';
+    {% endif %}
+});
 </script>
 
 </body>

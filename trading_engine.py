@@ -2,6 +2,8 @@ import io
 import os
 import math
 import base64
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -300,6 +302,50 @@ def cuckoo_search(prices, bounds, n_nests, max_iter, pa=0.25, seed=GLOBAL_SEED, 
     return best_nest, best_fitness, history
 
 
+def particle_swarm_optimisation(prices, bounds, max_evaluations, swarm_size=20, inertia_weight=0.7,
+                                cognitive_coefficient=1.5, social_coefficient=1.5,
+                                seed=GLOBAL_SEED, fitness_fn=None):
+    if fitness_fn is None:
+        fitness_fn = evaluate_fitness
+    rng = np.random.default_rng(seed)
+    lb = np.array([b[0] for b in bounds])
+    ub = np.array([b[1] for b in bounds])
+    search_range = ub - lb
+
+    positions = rng.uniform(lb, ub, size=(swarm_size, len(bounds)))
+    velocities = rng.uniform(-0.1 * search_range, 0.1 * search_range, size=(swarm_size, len(bounds)))
+
+    particle_fitness = np.array([fitness_fn(p, prices) for p in positions])
+    personal_best_pos = positions.copy()
+    personal_best_fit = particle_fitness.copy()
+    best_idx = np.argmax(personal_best_fit)
+    global_best_pos = personal_best_pos[best_idx].copy()
+    global_best_fit = personal_best_fit[best_idx]
+    history = [global_best_fit]
+    evals = swarm_size
+
+    while evals < max_evaluations:
+        for i in range(swarm_size):
+            if evals >= max_evaluations:
+                break
+            r1, r2 = rng.random(len(bounds)), rng.random(len(bounds))
+            velocities[i] = (inertia_weight * velocities[i]
+                             + cognitive_coefficient * r1 * (personal_best_pos[i] - positions[i])
+                             + social_coefficient * r2 * (global_best_pos - positions[i]))
+            positions[i] = apply_bounds(positions[i] + velocities[i], lb, ub)
+            f = fitness_fn(positions[i], prices)
+            evals += 1
+            if f > personal_best_fit[i]:
+                personal_best_pos[i] = positions[i].copy()
+                personal_best_fit[i] = f
+            if f > global_best_fit:
+                global_best_pos = positions[i].copy()
+                global_best_fit = f
+            history.append(global_best_fit)
+
+    return global_best_pos, global_best_fit, history
+
+
 def choose_algorithm(method, prices, bounds, budget):
     if method == 'CS':
         n_nests = min(20, max(5, budget // 40))
@@ -311,8 +357,9 @@ def choose_algorithm(method, prices, bounds, budget):
         return antlion_optimizer(prices, bounds, n_agents=n_agents, max_iter=max_iter)
     if method == 'SA':
         return simulated_annealing(prices, bounds, max_evals=budget)
-    if method == 'RS':
-        return random_search(prices, bounds, max_evals=budget)
+    if method == 'PSO':
+        swarm_size = min(20, max(5, budget // 30))
+        return particle_swarm_optimisation(prices, bounds, max_evaluations=budget, swarm_size=swarm_size)
     raise ValueError(f"Unknown algorithm: {method}")
 
 
@@ -372,3 +419,206 @@ def plot_trade_signals(params, dates, prices, algo_name):
     ax.legend(frameon=True)
     fig.autofmt_xdate()
     return fig
+
+
+# --- Multi-Segment Fitness ---
+
+def get_train_segments(train_df, train_prices):
+    seg_dates = train_df['date']
+    segments = [
+        train_prices[(seg_dates < '2017-01-01').values],
+        train_prices[((seg_dates >= '2017-01-01') & (seg_dates < '2018-01-01')).values],
+        train_prices[((seg_dates >= '2018-01-01') & (seg_dates < '2019-01-01')).values],
+        train_prices[(seg_dates >= '2019-01-01').values],
+    ]
+    labels = ['2014-2016 (Sideways)', '2017 (Bull)', '2018 (Bear)', '2019 (Recovery)']
+    return segments, labels
+
+
+def evaluate_fitness_multi(params, prices, train_segments=None, initial_cash=1000.0, fee=0.03):
+    if train_segments is None:
+        return evaluate_fitness(params, prices, initial_cash, fee)
+    scores = [evaluate_fitness(params, seg, initial_cash, fee) for seg in train_segments]
+    return np.mean(scores)
+
+
+# --- Run All Algorithms Comparison ---
+
+def run_comparison(prices, bounds, budget, fitness_fn, train_segments=None):
+    results = {}
+    for method, name in [('CS', 'Cuckoo Search'), ('ALO', 'Antlion Optimizer'), ('SA', 'Simulated Annealing'), ('PSO', 'Particle Swarm Optimisation')]:
+        if method == 'CS':
+            n_nests = min(20, max(5, budget // 40))
+            max_iter = max(2, budget // (2 * n_nests))
+            params, train_fit, history = cuckoo_search(prices, bounds, n_nests=n_nests, max_iter=max_iter, fitness_fn=fitness_fn)
+        elif method == 'ALO':
+            n_agents = min(20, max(5, budget // 30))
+            max_iter = max(2, budget // n_agents)
+            params, train_fit, history = antlion_optimizer(prices, bounds, n_agents=n_agents, max_iter=max_iter, fitness_fn=fitness_fn)
+        elif method == 'SA':
+            params, train_fit, history = simulated_annealing(prices, bounds, max_evals=budget, fitness_fn=fitness_fn)
+        elif method == 'PSO':
+            swarm_size = min(20, max(5, budget // 30))
+            params, train_fit, history = particle_swarm_optimisation(prices, bounds, max_evaluations=budget, swarm_size=swarm_size, fitness_fn=fitness_fn)
+        results[name] = {'params': params.tolist(), 'train': float(train_fit), 'history': [float(h) for h in history]}
+    return results
+
+
+# --- Period-based Evaluation ---
+
+def evaluate_on_periods(params, prices, dates, period_defs):
+    period_results = {}
+    for label, (start, end) in period_defs.items():
+        mask = (dates >= np.datetime64(start)) & (dates < np.datetime64(end))
+        if mask.sum() == 0:
+            period_results[label] = None
+            continue
+        seg_prices = prices[mask]
+        val = evaluate_fitness(params, seg_prices)
+        bh_val = 1000.0 * (seg_prices[-1] / seg_prices[0])
+        period_results[label] = {'algo': float(val), 'bh': float(bh_val)}
+    return period_results
+
+
+# --- Comparison Plotting ---
+
+ALGO_COLORS = {
+    'Cuckoo Search': '#27ae60',
+    'Antlion Optimizer': '#8e44ad',
+    'Simulated Annealing': '#f39c12',
+    'Particle Swarm Optimisation': '#577590',
+}
+
+
+def plot_combined_convergence(comparison_results, budget, mode_label):
+    fig, ax = plt.subplots(figsize=(10, 5))
+    for name, data in comparison_results.items():
+        color = ALGO_COLORS.get(name, '#333333')
+        hist = data['history']
+        x = np.linspace(0, budget, len(hist))
+        ax.plot(x, hist, label=f"{name} (${data['train']:,.0f})", color=color, linewidth=2)
+    ax.set_title(f'Convergence Comparison — {mode_label}', fontsize=13, fontweight='bold')
+    ax.set_xlabel('Objective Function Evaluations')
+    ax.set_ylabel('Best Portfolio Value (USD)')
+    ax.legend(frameon=True, facecolor='white')
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'${v:,.0f}'))
+    ax.grid(True, alpha=0.3)
+    return fig
+
+
+def plot_combined_backtest(comparison_results, dates, prices, bh_value, mode_label):
+    fig, ax = plt.subplots(figsize=(12, 5))
+    benchmark = prices / prices[0] * 1000.0
+    ax.plot(dates, benchmark, label=f'Buy & Hold (${bh_value:,.0f})', color='#7f8c8d',
+            linestyle='--', linewidth=2, alpha=0.8)
+    for name, data in comparison_results.items():
+        color = ALGO_COLORS.get(name, '#333333')
+        curve = simulate_portfolio_curve(np.array(data['params']), prices)
+        test_val = evaluate_fitness(np.array(data['params']), prices)
+        ax.plot(dates, curve, label=f"{name} (${test_val:,.0f})", color=color, linewidth=1.8)
+    ax.set_title(f'Out-of-Sample Backtest Comparison — {mode_label}', fontsize=13, fontweight='bold')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Portfolio Value (USD)')
+    ax.legend(frameon=True, facecolor='white', fontsize=9)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'${v:,.0f}'))
+    fig.autofmt_xdate()
+    return fig
+
+
+def plot_single_vs_multi(single_data, multi_data, bh_value):
+    fig, ax = plt.subplots(figsize=(10, 5))
+    algos = ['Cuckoo Search', 'Antlion Optimizer', 'Simulated Annealing', 'Particle Swarm Optimisation']
+    x = np.arange(len(algos))
+    width = 0.25
+
+    single_vals = [single_data.get(a, {}).get('test', 0) for a in algos]
+    multi_vals = [multi_data.get(a, {}).get('test', 0) for a in algos]
+
+    bars1 = ax.bar(x - width, single_vals, width, label='Single-Segment Test', color='#e74c3c', alpha=0.8)
+    bars2 = ax.bar(x, multi_vals, width, label='Multi-Segment Test', color='#2ecc71', alpha=0.8)
+    ax.axhline(y=bh_value, color='#7f8c8d', linestyle='--', linewidth=2, label=f'Buy & Hold (${bh_value:,.0f})')
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(algos, fontsize=9)
+    ax.set_title('Single-Segment vs Multi-Segment: Out-of-Sample Performance', fontsize=13, fontweight='bold')
+    ax.set_ylabel('Test Portfolio Value (USD)')
+    ax.legend(frameon=True, facecolor='white', fontsize=9)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'${v:,.0f}'))
+
+    for bar in bars1:
+        if bar.get_height() > 0:
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 50, f'${bar.get_height():,.0f}',
+                    ha='center', va='bottom', fontsize=7, fontweight='bold')
+    for bar in bars2:
+        if bar.get_height() > 0:
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 50, f'${bar.get_height():,.0f}',
+                    ha='center', va='bottom', fontsize=7, fontweight='bold')
+    return fig
+
+
+def plot_stress_test(all_stress_data, mode_label):
+    period_labels = list(list(all_stress_data.values())[0].keys()) if all_stress_data else []
+    algos = list(all_stress_data.keys())
+    fig, ax = plt.subplots(figsize=(14, 5.5))
+    x = np.arange(len(period_labels))
+    n_algos = len(algos)
+    width = 0.7 / n_algos
+
+    for i, algo in enumerate(algos):
+        vals = [all_stress_data[algo].get(p, {}).get('algo', 0) or 0 for p in period_labels]
+        offset = (i - (n_algos - 1) / 2) * width
+        color = ALGO_COLORS.get(algo, '#333333')
+        ax.bar(x + offset, vals, width, label=algo, color=color, alpha=0.85)
+
+    bh_vals = [all_stress_data[algos[0]].get(p, {}).get('bh', 0) or 0 for p in period_labels]
+    ax.bar(x + (n_algos / 2) * width, bh_vals, width, label='Buy & Hold', color='#7f8c8d', alpha=0.5, hatch='//')
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(period_labels, fontsize=8)
+    ax.set_title(f'Multi-Period Stress Test — {mode_label}', fontsize=13, fontweight='bold')
+    ax.set_ylabel('Portfolio Value (USD)')
+    ax.legend(frameon=True, facecolor='white', fontsize=8)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'${v:,.0f}'))
+    return fig
+
+
+def plot_bh_range(dates, prices, start_date, end_date, algo_results, best_algo_name):
+    mask = (dates >= start_date) & (dates <= end_date)
+    if mask.sum() < 2:
+        return None
+    seg_prices = prices[mask]
+    seg_dates = dates[mask]
+    bh_curve = 1000.0 * seg_prices / seg_prices[0]
+    bh_final = float(bh_curve[-1])
+
+    fig, ax = plt.subplots(figsize=(11, 4.5))
+    ax.fill_between(range(len(seg_dates)), 1000, bh_curve, alpha=0.08, color='#7f8c8d')
+    ax.plot(seg_dates, bh_curve, label=f'Buy & Hold (${bh_final:,.0f})', color='#7f8c8d', linestyle='--', linewidth=2.5)
+
+    for name, data in algo_results.items():
+        curve = simulate_portfolio_curve(np.array(data['params']), seg_prices)
+        final_val = float(curve[-1])
+        if name == best_algo_name:
+            color = ALGO_COLORS.get(name, '#27ae60')
+            ax.plot(seg_dates, curve, label=f'{name} (${final_val:,.0f})', color=color, linewidth=2.5, zorder=5)
+        else:
+            color = ALGO_COLORS.get(name, '#333333')
+            ax.plot(seg_dates, curve, label=f'{name} (${final_val:,.0f})', color=color, linewidth=1, alpha=0.45)
+
+    ax.axhline(y=1000, color='black', linestyle=':', linewidth=1, alpha=0.3)
+    ax.set_title(f'Custom Period Backtest: {str(start_date)[:10]} → {str(end_date)[:10]}', fontsize=13, fontweight='bold')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Portfolio Value (USD)')
+    ax.legend(frameon=True, facecolor='white', fontsize=8)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'${v:,.0f}'))
+    fig.autofmt_xdate()
+    return fig
+
+
+def get_date_range_info(dates, prices):
+    full_bh = 1000.0 * prices / prices[0]
+    return {
+        'min_date': str(dates.min())[:10],
+        'max_date': str(dates.max())[:10],
+        'full_bh': float(full_bh[-1]),
+    }

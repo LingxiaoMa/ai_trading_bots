@@ -159,7 +159,7 @@
             <span class="bitcoin-gradient-text">AI</span> project
         </h1>
         <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-sm">
-            Comparative metaheuristic analysis of institutional-grade algorithmic trading optimization. Four distinct paradigms competing on 14-dimensional parameter space to maximize portfolio returns.
+            Comparative metaheuristic analysis of algorithmic trading optimisation. Four paradigms — CS, ALO, SA, and PSO — competing on a 14-dimensional parameter space to maximise portfolio returns on Bitcoin market data.
         </p>
         <div class="max-w-xl mx-auto mb-lg rounded-3xl border border-white/10 bg-white/5 p-xl shadow-[0_0_40px_rgba(255,255,255,0.08)]">
             <h2 class="font-display-lg text-headline-sm text-primary mb-md">Team Member</h2>
@@ -185,20 +185,38 @@
         <div class="grid grid-cols-1 gap-lg mb-lg">
             <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
                 <h3 class="font-headline-sm text-headline-sm mb-sm">Configuration and hypothesis space</h3>
-                <p class="font-body-md text-on-surface-variant">The bot is configured as a 14-dimensional composite filter, with two parallel composite lines (HIGH and LOW). Each line uses three weighted moving-average components: SMA, LMA and EMA, plus a smoothing alpha parameter. This creates a hypothesis space that is expressive enough to model both short-term momentum and longer trend structure while still being tractable for metaheuristic search.</p>
-            </div>
-            <div class="glass-card p-xl border-primary/20 bg-primary/5">
-                <h3 class="font-headline-sm text-headline-sm mb-sm">Dimensionality and practicality</h3>
-                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
-                    <li>14 degrees of freedom: 7 parameters for HIGH and 7 for LOW.</li>
-                    <li>Window lengths, filter weights and EMA alpha each contribute to the search space.</li>
-                    <li>High/Low component separation reduces degenerate solutions and adds interpretability.</li>
-                    <li>Constrained ranges keep the evaluation cost manageable during optimization.</li>
-                </ul>
+                <p class="font-body-md text-on-surface-variant mb-md">The representation language is a continuous <strong>14-dimensional parameter vector</strong>. Each candidate solution encodes a complete trading strategy by defining the parameters for two parallel composite lines — FAST and SLOW — each built from three weighted moving-average components (SMA, LMA, EMA) plus a smoothing alpha. Fast/Slow component separation reduces degenerate solutions and keeps the hypothesis space tractable for metaheuristic search.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm font-body-md border-collapse">
+                        <thead>
+                            <tr class="border-b border-outline-variant/40">
+                                <th class="text-left py-sm pr-lg font-label-caps text-label-caps text-secondary w-8">Dim</th>
+                                <th class="text-left py-sm pr-lg font-label-caps text-label-caps">Parameter</th>
+                                <th class="text-left py-sm font-label-caps text-label-caps">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/20 text-on-surface-variant">
+                            <tr><td class="py-xs pr-lg font-data-mono text-secondary-container">1</td><td class="py-xs pr-lg">Fast SMA Weight</td><td class="py-xs">Weight assigned to the SMA component of the fast signal</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-secondary-container">2</td><td class="py-xs pr-lg">Fast LMA Weight</td><td class="py-xs">Weight assigned to the LMA component of the fast signal</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-secondary-container">3</td><td class="py-xs pr-lg">Fast EMA Weight</td><td class="py-xs">Weight assigned to the EMA component of the fast signal</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-secondary-container">4</td><td class="py-xs pr-lg">Fast SMA Window</td><td class="py-xs">Window size used for the fast SMA filter</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-secondary-container">5</td><td class="py-xs pr-lg">Fast LMA Window</td><td class="py-xs">Window size used for the fast LMA filter</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-secondary-container">6</td><td class="py-xs pr-lg">Fast EMA Window</td><td class="py-xs">Window size used for the fast EMA filter</td></tr>
+                            <tr class="border-b-2 border-outline-variant/40"><td class="py-xs pr-lg font-data-mono text-secondary-container">7</td><td class="py-xs pr-lg">Fast EMA Alpha</td><td class="py-xs">Exponential decay factor used for the fast EMA</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-primary">8</td><td class="py-xs pr-lg">Slow SMA Weight</td><td class="py-xs">Weight assigned to the SMA component of the slow signal</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-primary">9</td><td class="py-xs pr-lg">Slow LMA Weight</td><td class="py-xs">Weight assigned to the LMA component of the slow signal</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-primary">10</td><td class="py-xs pr-lg">Slow EMA Weight</td><td class="py-xs">Weight assigned to the EMA component of the slow signal</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-primary">11</td><td class="py-xs pr-lg">Slow SMA Window</td><td class="py-xs">Window size used for the slow SMA filter</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-primary">12</td><td class="py-xs pr-lg">Slow LMA Window</td><td class="py-xs">Window size used for the slow LMA filter</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-primary">13</td><td class="py-xs pr-lg">Slow EMA Window</td><td class="py-xs">Window size used for the slow EMA filter</td></tr>
+                            <tr><td class="py-xs pr-lg font-data-mono text-primary">14</td><td class="py-xs pr-lg">Slow EMA Alpha</td><td class="py-xs">Exponential decay factor used for the slow EMA</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="glass-card p-xl border-secondary-container/20 bg-secondary-container/5">
                 <h3 class="font-headline-sm text-headline-sm mb-sm">Search space constraints</h3>
-                <p class="font-body-md text-on-surface-variant">The design enforces short-term HIGH windows (2-40) and longer-term LOW windows (21-100). This prevents the optimizer from selecting illogical configurations where the 'fast' component is slower than the 'slow' component. It also acts as a regularizer, reducing overfitting risk while preserving enough flexibility to capture market structure.</p>
+                <p class="font-body-md text-on-surface-variant">The design enforces short-term FAST windows (2-40) and longer-term SLOW windows (21-100). This prevents the optimizer from selecting illogical configurations where the FAST component is slower than the SLOW component. It also acts as a regularizer, reducing overfitting risk while preserving enough flexibility to capture market structure.</p>
             </div>
         </div>
 
@@ -206,7 +224,7 @@
             <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
                 <h3 class="font-headline-sm text-headline-sm mb-sm">Iteration and learning</h3>
                 <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
-                    <li>Initial trials with fully unconstrained ranges produced inconsistent HIGH/LOW behaviour.</li>
+                    <li>Initial trials with fully unconstrained ranges produced inconsistent FAST/SLOW behaviour.</li>
                     <li>Introducing asymmetric window bounds improved signal stability and reduced noisy crossovers.</li>
                     <li>Empirical evaluation showed that narrower hypothesis spaces led to better out-of-sample resilience.</li>
                     <li>Practicality dictated a compact yet rich parameterisation that the metaheuristics could explore efficiently.</li>
@@ -215,12 +233,53 @@
             <div class="glass-card p-xl border-primary/20 bg-primary/5">
                 <h3 class="font-headline-sm text-headline-sm mb-sm">Resulting parameterisation</h3>
                 <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
-                    <li>HIGH and LOW each combine SMA/LMA/EMA weights and duration controls.</li>
+                    <li>FAST and SLOW each combine SMA/LMA/EMA weights and duration controls.</li>
                     <li>EMA alpha is tuned alongside moving-average durations for adaptive smoothing.</li>
                     <li>Final hypotheses balance responsiveness with trend stability.</li>
-                    <li>The 14-dimensional parameter set is well suited for CS, ALO, SA and RS search strategies.</li>
+                    <li>The 14-dimensional parameter set is well suited for CS, ALO, SA and PSO search strategies.</li>
                 </ul>
             </div>
+        </div>
+
+        <!-- Pseudocode -->
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mt-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-sm">Evaluation framework</h3>
+            <p class="font-body-md text-on-surface-variant mb-sm">The evaluation function drives the entire optimisation loop. Given a candidate 14-dimensional parameter vector, it constructs the FAST and SLOW composite lines, detects crossover signals, and simulates a full portfolio backtest with a 3% transaction fee to produce a single fitness score.</p>
+            <p class="font-body-md text-on-surface-variant mb-md">The pseudocode below formalises this process. Each metaheuristic algorithm calls this function thousands of times, treating the returned cash value as the objective to maximise.</p>
+            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-lg overflow-x-auto text-sm font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 1  Trading Bot Evaluation Framework</strong>
+
+<span class="text-zinc-500"> 1:</span>  parameters    <span class="text-amber-400">←</span> <span class="text-sky-400">CandidateSolution</span>
+<span class="text-zinc-500"> 2:</span>  price_series  <span class="text-amber-400">←</span> <span class="text-slate-400">Historical Bitcoin prices</span>
+<span class="text-zinc-500"> 3:</span>  fast_params   <span class="text-amber-400">←</span> parameters[<span class="text-orange-400">0</span>:<span class="text-orange-400">7</span>]
+<span class="text-zinc-500"> 4:</span>  slow_params   <span class="text-amber-400">←</span> parameters[<span class="text-orange-400">7</span>:<span class="text-orange-400">14</span>]
+<span class="text-zinc-500"> 5:</span>  fast_line     <span class="text-amber-400">←</span> <span class="text-sky-400">BuildCompositeLine</span>(price_series, fast_params)
+<span class="text-zinc-500"> 6:</span>  slow_line     <span class="text-amber-400">←</span> <span class="text-sky-400">BuildCompositeLine</span>(price_series, slow_params)
+<span class="text-zinc-500"> 7:</span>  signals       <span class="text-amber-400">←</span> <span class="text-orange-400">∅</span>
+<span class="text-zinc-500"> 8:</span>  <span class="text-violet-400">for each</span> time step t <span class="text-violet-400">in</span> price_series <span class="text-violet-400">do</span>
+<span class="text-zinc-500"> 9:</span>      <span class="text-violet-400">if</span> fast_line crosses above slow_line <span class="text-violet-400">then</span>
+<span class="text-zinc-500">10:</span>          signals[t] <span class="text-amber-400">←</span> <span class="text-emerald-400">BUY</span>
+<span class="text-zinc-500">11:</span>      <span class="text-violet-400">else if</span> fast_line crosses below slow_line <span class="text-violet-400">then</span>
+<span class="text-zinc-500">12:</span>          signals[t] <span class="text-amber-400">←</span> <span class="text-red-400">SELL</span>
+<span class="text-zinc-500">13:</span>      <span class="text-violet-400">else</span>
+<span class="text-zinc-500">14:</span>          signals[t] <span class="text-amber-400">←</span> <span class="text-slate-400">HOLD</span>
+<span class="text-zinc-500">15:</span>      <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">16:</span>  <span class="text-violet-400">end for</span>
+<span class="text-zinc-500">17:</span>  cash    <span class="text-amber-400">←</span> <span class="text-sky-400">InitialCash</span>
+<span class="text-zinc-500">18:</span>  bitcoin <span class="text-amber-400">←</span> <span class="text-orange-400">0</span>
+<span class="text-zinc-500">19:</span>  <span class="text-violet-400">for each</span> time step t <span class="text-violet-400">in</span> price_series <span class="text-violet-400">do</span>
+<span class="text-zinc-500">20:</span>      <span class="text-violet-400">if</span> signals[t] = <span class="text-emerald-400">BUY</span> <span class="text-violet-400">and</span> cash &gt; <span class="text-orange-400">0</span> <span class="text-violet-400">then</span>
+<span class="text-zinc-500">21:</span>          bitcoin <span class="text-amber-400">←</span> <span class="text-slate-400">cash converted to Bitcoin after fee</span>
+<span class="text-zinc-500">22:</span>          cash    <span class="text-amber-400">←</span> <span class="text-orange-400">0</span>
+<span class="text-zinc-500">23:</span>      <span class="text-violet-400">else if</span> signals[t] = <span class="text-red-400">SELL</span> <span class="text-violet-400">and</span> bitcoin &gt; <span class="text-orange-400">0</span> <span class="text-violet-400">then</span>
+<span class="text-zinc-500">24:</span>          cash    <span class="text-amber-400">←</span> <span class="text-slate-400">bitcoin converted to cash after fee</span>
+<span class="text-zinc-500">25:</span>          bitcoin <span class="text-amber-400">←</span> <span class="text-orange-400">0</span>
+<span class="text-zinc-500">26:</span>      <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">27:</span>  <span class="text-violet-400">end for</span>
+<span class="text-zinc-500">28:</span>  <span class="text-violet-400">if</span> bitcoin &gt; <span class="text-orange-400">0</span> <span class="text-violet-400">then</span>
+<span class="text-zinc-500">29:</span>      cash <span class="text-amber-400">←</span> <span class="text-slate-400">bitcoin converted to cash at final price after fee</span>
+<span class="text-zinc-500">30:</span>  <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">31:</span>  fitness <span class="text-amber-400">←</span> cash
+<span class="text-zinc-500">32:</span>  <span class="text-violet-400">return</span> fitness</code></pre>
         </div>
     </div>
 </section>
@@ -243,20 +302,28 @@
                 <span class="material-symbols-outlined text-secondary-container text-4xl">auto_awesome</span>
             </div>
             <p class="font-body-md text-on-surface-variant mb-md">Lévy Flight-based exploration with heavy-tailed random walks. Breaks local optima traps through sudden massive parameter leaps.</p>
-            <div class="space-y-sm">
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Global Search Capability</span>
-                    <span class="font-data-mono text-secondary">★★★★★</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Convergence Speed</span>
-                    <span class="font-data-mono text-secondary">★★★★☆</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Noise Robustness</span>
-                    <span class="font-data-mono text-secondary">★★★★★</span>
-                </div>
-            </div>
+            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-md overflow-x-auto text-xs font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 5  Cuckoo Search (CS)</strong>
+
+<span class="text-zinc-500"> 1:</span> NestPopulation <span class="text-amber-400">←</span> <span class="text-sky-400">RandomPopulation</span>()
+<span class="text-zinc-500"> 2:</span> <span class="text-sky-400">EvaluateFitness</span>(NestPopulation)
+<span class="text-zinc-500"> 3:</span> BestNest <span class="text-amber-400">←</span> <span class="text-sky-400">BestSolution</span>(NestPopulation)
+<span class="text-zinc-500"> 4:</span> <span class="text-violet-400">repeat</span>
+<span class="text-zinc-500"> 5:</span>     <span class="text-violet-400">for each</span> nest <span class="text-violet-400">do</span>
+<span class="text-zinc-500"> 6:</span>         NewNest <span class="text-amber-400">←</span> <span class="text-sky-400">LevyFlight</span>(BestNest)
+<span class="text-zinc-500"> 7:</span>         NewNest <span class="text-amber-400">←</span> <span class="text-sky-400">ApplyBounds</span>(NewNest)
+<span class="text-zinc-500"> 8:</span>         NewFitness <span class="text-amber-400">←</span> <span class="text-sky-400">EvaluateFitness</span>(NewNest)
+<span class="text-zinc-500"> 9:</span>         RandomNest <span class="text-amber-400">←</span> <span class="text-sky-400">RandomSelection</span>()
+<span class="text-zinc-500">10:</span>         <span class="text-violet-400">if</span> NewFitness &gt; Fitness(RandomNest) <span class="text-violet-400">then</span>
+<span class="text-zinc-500">11:</span>             <span class="text-sky-400">Replace</span>(RandomNest, NewNest)
+<span class="text-zinc-500">12:</span>         <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">13:</span>         <span class="text-violet-400">if</span> NewFitness &gt; Fitness(BestNest) <span class="text-violet-400">then</span>
+<span class="text-zinc-500">14:</span>             BestNest <span class="text-amber-400">←</span> NewNest
+<span class="text-zinc-500">15:</span>         <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">16:</span>     <span class="text-violet-400">end for</span>
+<span class="text-zinc-500">17:</span>     <span class="text-sky-400">DiscoveryStep</span>()
+<span class="text-zinc-500">18:</span>     <span class="text-sky-400">ReplaceDiscoveredNests</span>()
+<span class="text-zinc-500">19:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum iterations reached</span>
+<span class="text-zinc-500">20:</span> <span class="text-violet-400">return</span> BestNest</code></pre>
         </div>
 
         <!-- Antlion Optimizer -->
@@ -269,20 +336,26 @@
                 <span class="material-symbols-outlined text-secondary text-4xl">hub</span>
             </div>
             <p class="font-body-md text-on-surface-variant mb-md">Swarm intelligence with adaptive boundary shrinking. Balances ant exploration vs. antlion exploitation through dynamic constraint coupling.</p>
-            <div class="space-y-sm">
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Global Search Capability</span>
-                    <span class="font-data-mono text-secondary">★★★★☆</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Convergence Speed</span>
-                    <span class="font-data-mono text-secondary">★★★★★</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Noise Robustness</span>
-                    <span class="font-data-mono text-secondary">★★★☆☆</span>
-                </div>
-            </div>
+            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-md overflow-x-auto text-xs font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 4  Antlion Optimizer (ALO)</strong>
+
+<span class="text-zinc-500"> 1:</span> AntlionPopulation <span class="text-amber-400">←</span> <span class="text-sky-400">RandomPopulation</span>()
+<span class="text-zinc-500"> 2:</span> <span class="text-sky-400">EvaluateFitness</span>(AntlionPopulation)
+<span class="text-zinc-500"> 3:</span> Elite <span class="text-amber-400">←</span> <span class="text-sky-400">BestAntlion</span>(AntlionPopulation)
+<span class="text-zinc-500"> 4:</span> <span class="text-violet-400">repeat</span>
+<span class="text-zinc-500"> 5:</span>     <span class="text-violet-400">for each</span> ant <span class="text-violet-400">do</span>
+<span class="text-zinc-500"> 6:</span>         SelectedAntlion <span class="text-amber-400">←</span> <span class="text-sky-400">RouletteWheelSelection</span>()
+<span class="text-zinc-500"> 7:</span>         Walk1 <span class="text-amber-400">←</span> <span class="text-sky-400">RandomWalk</span>(SelectedAntlion)
+<span class="text-zinc-500"> 8:</span>         Walk2 <span class="text-amber-400">←</span> <span class="text-sky-400">RandomWalk</span>(Elite)
+<span class="text-zinc-500"> 9:</span>         Ant <span class="text-amber-400">←</span> <span class="text-sky-400">Average</span>(Walk1, Walk2)
+<span class="text-zinc-500">10:</span>         Ant <span class="text-amber-400">←</span> <span class="text-sky-400">ApplyBounds</span>(Ant)
+<span class="text-zinc-500">11:</span>     <span class="text-violet-400">end for</span>
+<span class="text-zinc-500">12:</span>     <span class="text-sky-400">EvaluateFitness</span>(AllAnts)
+<span class="text-zinc-500">13:</span>     CombinedPopulation <span class="text-amber-400">←</span> Antlions <span class="text-orange-400">∪</span> Ants
+<span class="text-zinc-500">14:</span>     <span class="text-sky-400">KeepBestSolutions</span>(CombinedPopulation)
+<span class="text-zinc-500">15:</span>     Elite <span class="text-amber-400">←</span> <span class="text-sky-400">BestAntlion</span>(CombinedPopulation)
+<span class="text-zinc-500">16:</span>     <span class="text-sky-400">ShrinkSearchBoundaries</span>()
+<span class="text-zinc-500">17:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum iterations reached</span>
+<span class="text-zinc-500">18:</span> <span class="text-violet-400">return</span> Elite</code></pre>
         </div>
 
         <!-- Simulated Annealing -->
@@ -295,46 +368,70 @@
                 <span class="material-symbols-outlined text-secondary text-4xl">thermostat</span>
             </div>
             <p class="font-body-md text-on-surface-variant mb-md">Metallurgical cooling inspiration. Temperature-modulated probabilistic acceptance of worse solutions enables shallow local optimum escape.</p>
-            <div class="space-y-sm">
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Global Search Capability</span>
-                    <span class="font-data-mono text-secondary">★★☆☆☆</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Convergence Speed</span>
-                    <span class="font-data-mono text-secondary">★★★☆☆</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Noise Robustness</span>
-                    <span class="font-data-mono text-secondary">★★★☆☆</span>
-                </div>
-            </div>
+            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-md overflow-x-auto text-xs font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 3  Simulated Annealing (SA)</strong>
+
+<span class="text-zinc-500"> 1:</span> CurrentSolution <span class="text-amber-400">←</span> <span class="text-sky-400">RandomCandidate</span>()
+<span class="text-zinc-500"> 2:</span> CurrentFitness <span class="text-amber-400">←</span> <span class="text-sky-400">EvaluateFitness</span>(CurrentSolution)
+<span class="text-zinc-500"> 3:</span> BestSolution <span class="text-amber-400">←</span> CurrentSolution
+<span class="text-zinc-500"> 4:</span> BestFitness <span class="text-amber-400">←</span> CurrentFitness
+<span class="text-zinc-500"> 5:</span> Temperature <span class="text-amber-400">←</span> InitialTemperature
+<span class="text-zinc-500"> 6:</span> <span class="text-violet-400">repeat</span>
+<span class="text-zinc-500"> 7:</span>     NeighbourSolution <span class="text-amber-400">←</span> <span class="text-sky-400">Perturb</span>(CurrentSolution)
+<span class="text-zinc-500"> 8:</span>     NeighbourSolution <span class="text-amber-400">←</span> <span class="text-sky-400">ApplyBounds</span>(NeighbourSolution)
+<span class="text-zinc-500"> 9:</span>     NeighbourFitness <span class="text-amber-400">←</span> <span class="text-sky-400">EvaluateFitness</span>(NeighbourSolution)
+<span class="text-zinc-500">10:</span>     <span class="text-violet-400">if</span> NeighbourFitness &gt; CurrentFitness <span class="text-violet-400">then</span>
+<span class="text-zinc-500">11:</span>         CurrentSolution <span class="text-amber-400">←</span> NeighbourSolution
+<span class="text-zinc-500">12:</span>         CurrentFitness <span class="text-amber-400">←</span> NeighbourFitness
+<span class="text-zinc-500">13:</span>         <span class="text-violet-400">if</span> CurrentFitness &gt; BestFitness <span class="text-violet-400">then</span>
+<span class="text-zinc-500">14:</span>             BestSolution <span class="text-amber-400">←</span> CurrentSolution
+<span class="text-zinc-500">15:</span>             BestFitness <span class="text-amber-400">←</span> CurrentFitness
+<span class="text-zinc-500">16:</span>         <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">17:</span>     <span class="text-violet-400">else</span>
+<span class="text-zinc-500">18:</span>         AcceptProb <span class="text-amber-400">←</span> <span class="text-sky-400">exp</span>((NeighbourFitness - CurrentFitness) / Temperature)
+<span class="text-zinc-500">19:</span>         <span class="text-violet-400">if</span> <span class="text-sky-400">Random</span>(<span class="text-orange-400">0</span>,<span class="text-orange-400">1</span>) &lt; AcceptProb <span class="text-violet-400">then</span>
+<span class="text-zinc-500">20:</span>             CurrentSolution <span class="text-amber-400">←</span> NeighbourSolution
+<span class="text-zinc-500">21:</span>             CurrentFitness <span class="text-amber-400">←</span> NeighbourFitness
+<span class="text-zinc-500">22:</span>         <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">23:</span>     <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">24:</span>     Temperature <span class="text-amber-400">←</span> Temperature × CoolingRate
+<span class="text-zinc-500">25:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum evaluations reached</span>
+<span class="text-zinc-500">26:</span> <span class="text-violet-400">return</span> BestSolution</code></pre>
         </div>
 
-        <!-- Random Search Baseline -->
-        <div class="glass-card p-xl border-error/20 bg-error/5">
+        <!-- Particle Swarm Optimisation -->
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
             <div class="flex justify-between items-start mb-lg">
                 <div>
-                    <span class="font-data-mono text-error text-label-caps">[04] BASELINE</span>
-                    <h3 class="font-headline-md text-headline-md mt-sm">Random Search</h3>
+                    <span class="font-data-mono text-secondary text-label-caps">[04] POPULATION</span>
+                    <h3 class="font-headline-md text-headline-md mt-sm">Particle Swarm Optimisation</h3>
                 </div>
-                <span class="material-symbols-outlined text-error text-4xl">shuffle</span>
+                <span class="material-symbols-outlined text-secondary text-4xl">scatter_plot</span>
             </div>
-            <p class="font-body-md text-on-surface-variant mb-md">Uniform random exploration across bounded parameter space. Control baseline to prove metaheuristic superiority beyond chance.</p>
-            <div class="space-y-sm">
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Global Search Capability</span>
-                    <span class="font-data-mono text-error">★☆☆☆☆</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Convergence Speed</span>
-                    <span class="font-data-mono text-error">★☆☆☆☆</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="font-label-caps">Noise Robustness</span>
-                    <span class="font-data-mono text-error">★★☆☆☆</span>
-                </div>
-            </div>
+            <p class="font-body-md text-on-surface-variant mb-md">Population-based swarm intelligence inspired by collective social behaviour. Each particle represents a candidate trading strategy; positions update via three components — inertia, personal best experience, and global swarm knowledge.</p>
+            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-md overflow-x-auto text-xs font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 6  Particle Swarm Optimisation (PSO)</strong>
+
+<span class="text-zinc-500"> 1:</span> <span class="text-slate-400">Initialise particle positions</span>
+<span class="text-zinc-500"> 2:</span> <span class="text-slate-400">Initialise particle velocities</span>
+<span class="text-zinc-500"> 3:</span> <span class="text-sky-400">EvaluateFitness</span>(AllParticles)
+<span class="text-zinc-500"> 4:</span> PersonalBest <span class="text-amber-400">←</span> ParticlePositions
+<span class="text-zinc-500"> 5:</span> GlobalBest <span class="text-amber-400">←</span> <span class="text-sky-400">BestParticle</span>()
+<span class="text-zinc-500"> 6:</span> <span class="text-violet-400">repeat</span>
+<span class="text-zinc-500"> 7:</span>     <span class="text-violet-400">for each</span> particle <span class="text-violet-400">do</span>
+<span class="text-zinc-500"> 8:</span>         CognitiveComponent <span class="text-amber-400">←</span> <span class="text-slate-400">distance to PersonalBest</span>
+<span class="text-zinc-500"> 9:</span>         SocialComponent <span class="text-amber-400">←</span> <span class="text-slate-400">distance to GlobalBest</span>
+<span class="text-zinc-500">10:</span>         Velocity <span class="text-amber-400">←</span> Inertia + CognitiveComponent + SocialComponent
+<span class="text-zinc-500">11:</span>         <span class="text-slate-400">Update particle position</span>
+<span class="text-zinc-500">12:</span>         <span class="text-slate-400">Apply parameter bounds</span>
+<span class="text-zinc-500">13:</span>         CurrentFitness <span class="text-amber-400">←</span> <span class="text-sky-400">EvaluateFitness</span>(Particle)
+<span class="text-zinc-500">14:</span>         <span class="text-violet-400">if</span> CurrentFitness &gt; PersonalBestFitness <span class="text-violet-400">then</span>
+<span class="text-zinc-500">15:</span>             <span class="text-slate-400">Update PersonalBest</span>
+<span class="text-zinc-500">16:</span>         <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">17:</span>         <span class="text-violet-400">if</span> CurrentFitness &gt; GlobalBestFitness <span class="text-violet-400">then</span>
+<span class="text-zinc-500">18:</span>             <span class="text-slate-400">Update GlobalBest</span>
+<span class="text-zinc-500">19:</span>         <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">20:</span>     <span class="text-violet-400">end for</span>
+<span class="text-zinc-500">21:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum evaluations reached</span>
+<span class="text-zinc-500">22:</span> <span class="text-violet-400">return</span> GlobalBest</code></pre>
         </div>
     </div>
 </section>
@@ -371,8 +468,8 @@
         <div class="glass-card p-xl border-secondary-container/20 bg-secondary-container/5 mb-lg">
             <h3 class="font-headline-sm text-headline-sm mb-sm">Experiment variables</h3>
             <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
-                <li>Algorithm type: CS, ALO, SA, RS.</li>
-                <li>Signal design: 14 parameters controlling HIGH/LOW crossover filters.</li>
+                <li>Algorithm type: CS, ALO, SA, PSO.</li>
+                <li>Signal design: 14 parameters controlling FAST/SLOW crossover filters.</li>
                 <li>Regime tests: single-segment vs multi-segment training objectives.</li>
                 <li>Evaluation focus: portfolio growth, convergence stability, and signal interpretability.</li>
             </ul>
@@ -426,10 +523,10 @@
                             <td class="py-sm">Slow but stable; escape via probabilistic acceptance.</td>
                         </tr>
                         <tr>
-                            <td class="py-sm">Random Search</td>
-                            <td class="py-sm">Baseline</td>
-                            <td class="py-sm">Low</td>
-                            <td class="py-sm">Control benchmark for algorithmic significance.</td>
+                            <td class="py-sm">Particle Swarm Optimisation</td>
+                            <td class="py-sm">Swarm intelligence</td>
+                            <td class="py-sm">Fast convergence</td>
+                            <td class="py-sm">Highest single-segment training fitness ($46,705); velocity-based personal and global best updates; swarm_size=30, inertia=0.7, c1=c2=1.5.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -439,45 +536,55 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
             <div class="glass-card p-xl cyber-glow">
                 <h3 class="font-headline-sm text-headline-sm mb-md">Training Performance</h3>
-                <p class="font-body-md text-on-surface-variant mb-md">Convergence charts show how each algorithm improves best portfolio value during the training phase. Cuckoo Search attains the highest final objective value, while Random Search remains the control baseline.</p>
+                <p class="font-body-md text-on-surface-variant mb-md">Convergence on daily training data (9,000 evals). PSO attained the highest single-segment training fitness, followed closely by ALO. Values from Experiment 1 of the notebook.</p>
                 <div class="space-y-md">
                     <div class="flex justify-between items-end">
-                        <span class="font-body-md">Cuckoo Search</span>
-                        <span class="font-data-mono text-headline-sm text-secondary-container">$26,847</span>
+                        <span class="font-body-md">Particle Swarm Optimisation</span>
+                        <span class="font-data-mono text-headline-sm text-secondary">$46,705</span>
                     </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary-container h-full w-[88%]"></div></div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary h-full w-[100%]"></div></div>
                     <div class="flex justify-between items-end">
                         <span class="font-body-md">Antlion Optimizer</span>
-                        <span class="font-data-mono text-headline-sm text-secondary">$18,392</span>
+                        <span class="font-data-mono text-headline-sm text-secondary">$44,740</span>
                     </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary h-full w-[60%]"></div></div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary h-full w-[96%]"></div></div>
                     <div class="flex justify-between items-end">
                         <span class="font-body-md">Simulated Annealing</span>
-                        <span class="font-data-mono text-headline-sm text-primary">$13,654</span>
+                        <span class="font-data-mono text-headline-sm text-primary">$29,051</span>
                     </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-primary h-full w-[45%]"></div></div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-primary h-full w-[62%]"></div></div>
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Cuckoo Search</span>
+                        <span class="font-data-mono text-headline-sm text-secondary-container">$28,595</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary-container h-full w-[61%]"></div></div>
                 </div>
             </div>
 
             <div class="glass-card p-xl cyber-glow">
                 <h3 class="font-headline-sm text-headline-sm mb-md">Test Performance</h3>
-                <p class="font-body-md text-on-surface-variant mb-md">Out-of-sample backtesting reveals real-world robustness. Live portfolio charts compare growth against the buy-and-hold benchmark on 2020+ Bitcoin prices.</p>
+                <p class="font-body-md text-on-surface-variant mb-md">Out-of-sample test on 2020+ daily data (initial $1,000). SA generalised best among all algorithms; PSO and ALO showed high training fitness but lower test robustness. Values from Experiment 3 of the notebook.</p>
                 <div class="space-y-md">
                     <div class="flex justify-between items-end">
-                        <span class="font-body-md">Cuckoo Search</span>
-                        <span class="font-data-mono text-headline-sm text-secondary-container">$3,240</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary-container h-full w-[92%]"></div></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Buy & Hold</span>
-                        <span class="font-data-mono text-headline-sm text-on-surface-variant">$3,516</span>
+                        <span class="font-body-md">Buy &amp; Hold</span>
+                        <span class="font-data-mono text-headline-sm text-on-surface-variant">$6,016</span>
                     </div>
                     <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-on-surface-variant h-full w-[100%]"></div></div>
                     <div class="flex justify-between items-end">
-                        <span class="font-body-md">Antlion Optimizer</span>
-                        <span class="font-data-mono text-headline-sm text-error">$1,887</span>
+                        <span class="font-body-md">Simulated Annealing</span>
+                        <span class="font-data-mono text-headline-sm text-primary">$4,207</span>
                     </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-error h-full w-[54%]"></div></div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-primary h-full w-[70%]"></div></div>
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Cuckoo Search</span>
+                        <span class="font-data-mono text-headline-sm text-secondary-container">$3,377</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary-container h-full w-[56%]"></div></div>
+                    <div class="flex justify-between items-end">
+                        <span class="font-body-md">Particle Swarm Optimisation</span>
+                        <span class="font-data-mono text-headline-sm text-secondary">$2,722</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary h-full w-[45%]"></div></div>
                 </div>
             </div>
         </div>
@@ -493,10 +600,11 @@
             <h3 class="font-headline-sm text-headline-sm mb-md">Conclusions</h3>
             <ul class="space-y-sm font-body-md text-on-surface-variant">
                 <li><strong>Design choice:</strong> A 14-dimensional composite signal allowed rich signal shaping while remaining computationally feasible.</li>
-                <li><strong>Algorithm selection:</strong> CS and ALO were chosen to probe global search and swarm strategies; SA provided a local refinement baseline.</li>
-                <li><strong>Experimentation:</strong> Iterating on parameter budgets and constraint settings highlighted trade-offs between evaluation cost and stability.</li>
-                <li><strong>Result interpretation:</strong> Training success does not guarantee test robustness; live-market comparisons show buy-and-hold can outperform some metaheuristics in the selected period.</li>
-                <li><strong>Academic takeaway:</strong> The project demonstrates how metaheuristic behavior must be assessed by both convergence and out-of-sample generalization.</li>
+                <li><strong>Algorithm selection:</strong> CS and ALO use swarm-based Lévy-flight and antlion mechanics; PSO uses velocity-based social learning; SA provides single-state probabilistic acceptance for comparison.</li>
+                <li><strong>PSO insight:</strong> PSO converged fastest (23.99 s) and achieved the highest single-segment training fitness ($46,705), but its swarm social dynamic led to overfitting — test ROI of 172.2% vs SA's 320.7%.</li>
+                <li><strong>Multi-segment robustness:</strong> Enforcing optimisation across 4 market regimes (sideways, bull, bear, recovery) substantially improved PSO's test value from $2,722 to $4,712.</li>
+                <li><strong>Result interpretation:</strong> Training success does not guarantee test robustness; buy-and-hold ($6,016) outperformed all single-segment optimised strategies on the 2020+ bull market.</li>
+                <li><strong>Academic takeaway:</strong> Metaheuristic behaviour must be assessed by both convergence speed and out-of-sample generalisation across market regimes.</li>
             </ul>
         </div>
     </div>
@@ -506,28 +614,77 @@
 <section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-lowest" id="conclusions">
     <div class="max-w-screen-2xl mx-auto">
         <div class="text-center mb-xl">
-            <h2 class="font-headline-md text-headline-md uppercase mb-md">Conclusions</h2>
-            <p class="font-body-md text-on-surface-variant">Summarized findings highlighting generalization, algorithm selection, and practical implications.</p>
+            <h2 class="font-headline-md text-headline-md uppercase mb-md">Discussion and Conclusions</h2>
+            <p class="font-body-md text-on-surface-variant">Four key findings from the comparative experiments, covering benchmark dependency, bias-variance trade-offs, population diversity, and global exploration.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+            <!-- Finding 1 -->
             <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
-                <h3 class="font-headline-sm text-headline-sm mb-sm">Key findings</h3>
-                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
-                    <li>Buy-and-hold excels in the bullish 2020+ test window, but its robustness is regime-dependent.</li>
-                    <li>SA often generalizes better than population-based methods when training overfits.</li>
-                    <li>CS shows superior multi-segment robustness thanks to Lévy-flight diversity.</li>
-                    <li>High/Low parameter constraints improved signal stability and reduced overfitting risk.</li>
-                </ul>
+                <div class="flex items-center gap-sm mb-md">
+                    <span class="font-data-mono text-secondary-container text-label-caps">[01]</span>
+                    <h3 class="font-headline-sm text-headline-sm">Buy &amp; Hold Benchmark and Regime Dependency</h3>
+                </div>
+                <p class="font-body-md text-on-surface-variant mb-sm">The superior performance of Buy &amp; Hold ($6,016) was determined by the test dataset's characteristics rather than inherent strategy superiority. During the 2020–2022 testing period, Bitcoin rose from $7,200 to $43,000. In such regimes, holding is optimal — active algorithms risk missing upward movements and incur 3% transaction fees per trade.</p>
+                <p class="font-body-md text-on-surface-variant">However, B&amp;H is not robust. During the 2018 bear market, B&amp;H suffered an 82% loss, whereas trend-following algorithms would significantly outperform it. B&amp;H's success in this experiment reflects coincidental timing rather than true adaptability to varying market environments.</p>
             </div>
+
+            <!-- Finding 2 -->
             <div class="glass-card p-xl border-primary/20 bg-primary/5">
-                <h3 class="font-headline-sm text-headline-sm mb-sm">Practical implication</h3>
-                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
-                    <li>Out-of-sample evaluation is critical for algorithmic trading research.</li>
-                    <li>Training performance alone is insufficient to select live trading strategies.</li>
-                    <li>Algorithm comparison should include both convergence and generalization metrics.</li>
-                    <li>Visual evidence from charts provides the necessary support for these conclusions.</li>
-                </ul>
+                <div class="flex items-center gap-sm mb-md">
+                    <span class="font-data-mono text-primary text-label-caps">[02]</span>
+                    <h3 class="font-headline-sm text-headline-sm">Limited Exploration: SA in Single-Segment</h3>
+                </div>
+                <p class="font-body-md text-on-surface-variant mb-sm">SA achieved $4,207 out-of-sample, outperforming CS ($3,377), PSO ($2,722), and ALO ($2,234). SA's rapid cooling rate (0.98) caused it to converge early to a "good enough" local optimum, preventing it from over-fitting the training data's noise.</p>
+                <p class="font-body-md text-on-surface-variant">Conversely, population-based algorithms performed aggressive exploitation, leading to severe overfitting. PSO achieved the highest training fitness ($46,705) but yielded only $2,722 in testing. This illustrates the <strong>bias-variance trade-off</strong>: SA's limited exploration resulted in higher bias but lower variance, yielding superior generalisation.</p>
+            </div>
+
+            <!-- Finding 3 -->
+            <div class="glass-card p-xl border-secondary-container/20 bg-secondary-container/5">
+                <div class="flex items-center gap-sm mb-md">
+                    <span class="font-data-mono text-secondary-container text-label-caps">[03]</span>
+                    <h3 class="font-headline-sm text-headline-sm">Population Diversity in Multi-Segment Environments</h3>
+                </div>
+                <p class="font-body-md text-on-surface-variant mb-sm">The multi-segment fitness function required stable average performance across four distinct market regimes. Under these conditions, SA's single-state nature became a liability — once trapped in a new local optimum, it lacked mechanisms to maintain alternative candidates, causing its test performance to drop to $3,381.</p>
+                <p class="font-body-md text-on-surface-variant">Population-based algorithms possessed a structural advantage by continuously maintaining 30 candidate solutions across different regions of the parameter space. This increased the probability of discovering parameters that generalised well across all historical phases, allowing ALO, PSO, and CS to all surpass SA in out-of-sample performance.</p>
+            </div>
+
+            <!-- Finding 4 -->
+            <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
+                <div class="flex items-center gap-sm mb-md">
+                    <span class="font-data-mono text-secondary text-label-caps">[04]</span>
+                    <h3 class="font-headline-sm text-headline-sm">Global Exploration: CS vs. ALO and PSO</h3>
+                </div>
+                <p class="font-body-md text-on-surface-variant mb-sm">CS demonstrated superior robustness in the multi-segment framework, achieving the highest out-of-sample performance ($5,495), surpassing ALO ($4,971) and PSO ($4,712). ALO's roulette-wheel selection and boundary contraction, and PSO's velocity inertia, are highly efficient exploiters — but if populations converge into a regime-specific local optimum, they lack mechanisms to escape.</p>
+                <p class="font-body-md text-on-surface-variant mb-md">CS uses <strong>Lévy Flights</strong> with heavy-tailed step sizes that produce occasional extremely large jumps. Combined with periodic nest replacement (pa=0.25), CS maintains high population diversity and discovered genuinely robust parameters across all market regimes.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs font-mono border-collapse">
+                        <thead>
+                            <tr class="border-b border-outline-variant/40">
+                                <th class="text-left py-xs pr-lg font-label-caps text-label-caps">Algorithm</th>
+                                <th class="text-right py-xs pr-lg font-label-caps text-label-caps">Multi-Seg Train</th>
+                                <th class="text-right py-xs font-label-caps text-label-caps">Multi-Seg Test</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/20 text-on-surface-variant">
+                            <tr>
+                                <td class="py-xs pr-lg">PSO</td>
+                                <td class="py-xs pr-lg text-right">$4,498</td>
+                                <td class="py-xs text-right">$4,712</td>
+                            </tr>
+                            <tr>
+                                <td class="py-xs pr-lg">ALO</td>
+                                <td class="py-xs pr-lg text-right">$4,579</td>
+                                <td class="py-xs text-right">$4,971</td>
+                            </tr>
+                            <tr>
+                                <td class="py-xs pr-lg text-secondary-container font-semibold">CS</td>
+                                <td class="py-xs pr-lg text-right text-secondary-container font-semibold">$4,503</td>
+                                <td class="py-xs text-right text-secondary-container font-semibold">$5,495</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
