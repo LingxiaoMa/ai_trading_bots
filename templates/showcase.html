@@ -476,6 +476,28 @@
             </ul>
         </div>
 
+       
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-md">Experiment Overview</h3>
+            <p class="font-body-md text-on-surface-variant mb-md">Four experiments were conducted to comprehensively evaluate optimization algorithms across different data frequencies, out-of-sample generalization, and market regime robustness.</p>
+            <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                <li><strong>Experiment 1:</strong> Daily training convergence—comparative analysis of RS, SA, ALO, CS, and PSO on pre-2020 Bitcoin daily data (9,000 evaluations per algorithm).</li>
+                <li><strong>Experiment 2:</strong> Hourly training complexity—evaluation of computational cost and landscape complexity when using hourly data (30–50x more observations than daily).</li>
+                <li><strong>Experiment 3:</strong> Out-of-sample generalization—testing optimized strategies on 2020+ Bitcoin data to measure true robustness and regime adaptability.</li>
+                <li><strong>Experiment 4:</strong> Multi-segment robustness—optimization across four distinct market regimes (2014–2016 sideways, 2017 bull, 2018 bear, 2019 recovery) to discover generalizable parameters.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Results Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-lowest" id="results">
+    <div class="max-w-screen-2xl mx-auto">
+        <div class="text-center mb-xl">
+            <h2 class="font-headline-md text-headline-md uppercase mb-md">Detailed Results</h2>
+            <p class="font-body-md text-on-surface-variant">Results and findings from all four experiments with visual evidence and comparative analysis.</p>
+        </div>
+
         <!-- Experiment 1: Daily Training -->
         <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
             <h3 class="font-headline-sm text-headline-sm mb-md">Experiment 1: Convergence on Daily Training Data</h3>
@@ -593,133 +615,6 @@
                     <p class="font-body-md text-on-surface-variant text-sm">Population-based algorithms (CS, ALO, PSO) maintained diverse candidate solutions across market regimes, enabling robust parameter discovery. Single-state SA became trapped in regime-specific optima.</p>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- Results Section -->
-<section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-lowest" id="results">
-    <div class="max-w-screen-2xl mx-auto">
-        <div class="text-center mb-xl">
-            <h2 class="font-headline-md text-headline-md uppercase mb-md">Detailed Results</h2>
-            <p class="font-body-md text-on-surface-variant">Results are presented in comparative tables and charts for academic clarity.</p>
-        </div>
-
-        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
-            <h3 class="font-headline-sm text-headline-sm mb-md">Algorithm Comparison Table</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-left text-on-surface-variant">
-                    <thead>
-                        <tr class="border-b border-outline-variant/30">
-                            <th class="py-sm pr-md font-label-caps text-label-caps uppercase">Algorithm</th>
-                            <th class="py-sm pr-md font-label-caps text-label-caps uppercase">Category</th>
-                            <th class="py-sm pr-md font-label-caps text-label-caps uppercase">Strength</th>
-                            <th class="py-sm pr-md font-label-caps text-label-caps uppercase">Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-outline-variant/10">
-                        <tr>
-                            <td class="py-sm">Cuckoo Search</td>
-                            <td class="py-sm">Lévy-flight population</td>
-                            <td class="py-sm">High exploration</td>
-                            <td class="py-sm">Best training convergence; strong global jumps.</td>
-                        </tr>
-                        <tr>
-                            <td class="py-sm">Antlion Optimizer</td>
-                            <td class="py-sm">Swarm intelligence</td>
-                            <td class="py-sm">Balanced search</td>
-                            <td class="py-sm">Good exploitation; moderate generalization.</td>
-                        </tr>
-                        <tr>
-                            <td class="py-sm">Simulated Annealing</td>
-                            <td class="py-sm">Single-state</td>
-                            <td class="py-sm">Local refinement</td>
-                            <td class="py-sm">Slow but stable; escape via probabilistic acceptance.</td>
-                        </tr>
-                        <tr>
-                            <td class="py-sm">Particle Swarm Optimisation</td>
-                            <td class="py-sm">Swarm intelligence</td>
-                            <td class="py-sm">Fast convergence</td>
-                            <td class="py-sm">Highest single-segment training fitness ($46,705); velocity-based personal and global best updates; swarm_size=30, inertia=0.7, c1=c2=1.5.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
-            <div class="glass-card p-xl cyber-glow">
-                <h3 class="font-headline-sm text-headline-sm mb-md">Training Performance</h3>
-                <p class="font-body-md text-on-surface-variant mb-md">Convergence on daily training data (9,000 evals). PSO attained the highest single-segment training fitness, followed closely by ALO. Values from Experiment 1 of the notebook.</p>
-                <div class="space-y-md">
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Particle Swarm Optimisation</span>
-                        <span class="font-data-mono text-headline-sm text-secondary">$46,705</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary h-full w-[100%]"></div></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Antlion Optimizer</span>
-                        <span class="font-data-mono text-headline-sm text-secondary">$44,740</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary h-full w-[96%]"></div></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Simulated Annealing</span>
-                        <span class="font-data-mono text-headline-sm text-primary">$29,051</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-primary h-full w-[62%]"></div></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Cuckoo Search</span>
-                        <span class="font-data-mono text-headline-sm text-secondary-container">$28,595</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary-container h-full w-[61%]"></div></div>
-                </div>
-            </div>
-
-            <div class="glass-card p-xl cyber-glow">
-                <h3 class="font-headline-sm text-headline-sm mb-md">Test Performance</h3>
-                <p class="font-body-md text-on-surface-variant mb-md">Out-of-sample test on 2020+ daily data (initial $1,000). SA generalised best among all algorithms; PSO and ALO showed high training fitness but lower test robustness. Values from Experiment 3 of the notebook.</p>
-                <div class="space-y-md">
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Buy &amp; Hold</span>
-                        <span class="font-data-mono text-headline-sm text-on-surface-variant">$6,016</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-on-surface-variant h-full w-[100%]"></div></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Simulated Annealing</span>
-                        <span class="font-data-mono text-headline-sm text-primary">$4,207</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-primary h-full w-[70%]"></div></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Cuckoo Search</span>
-                        <span class="font-data-mono text-headline-sm text-secondary-container">$3,377</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary-container h-full w-[56%]"></div></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-body-md">Particle Swarm Optimisation</span>
-                        <span class="font-data-mono text-headline-sm text-secondary">$2,722</span>
-                    </div>
-                    <div class="w-full bg-surface-container h-4 rounded-full overflow-hidden"><div class="bg-secondary h-full w-[45%]"></div></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
-            <h3 class="font-headline-sm text-headline-sm mb-md">Comparison</h3>
-            <p class="font-body-md text-on-surface-variant mb-md">Single-sequence vs multi-segment test performance, visualized from the comparative chart.</p>
-            <img src="/image/single-sequence-vs-multi-segment.png" alt="Single-Sequence vs Multi-Segment Out-of-Sample Performance" class="w-full h-auto rounded-lg border border-outline-variant/20 shadow-lg" />
-            <p class="font-body-md text-on-surface-variant/80 mt-sm">Figure: Single-Sequence vs Multi-Segment out-of-sample performance.</p>
-        </div>
-
-        <div class="glass-card p-xl border-primary/20 bg-primary/5">
-            <h3 class="font-headline-sm text-headline-sm mb-md">Conclusions</h3>
-            <ul class="space-y-sm font-body-md text-on-surface-variant">
-                <li><strong>Design choice:</strong> A 14-dimensional composite signal allowed rich signal shaping while remaining computationally feasible.</li>
-                <li><strong>Algorithm selection:</strong> CS and ALO use swarm-based Lévy-flight and antlion mechanics; PSO uses velocity-based social learning; SA provides single-state probabilistic acceptance for comparison.</li>
-                <li><strong>PSO insight:</strong> PSO converged fastest (23.99 s) and achieved the highest single-segment training fitness ($46,705), but its swarm social dynamic led to overfitting — test ROI of 172.2% vs SA's 320.7%.</li>
-                <li><strong>Multi-segment robustness:</strong> Enforcing optimisation across 4 market regimes (sideways, bull, bear, recovery) substantially improved PSO's test value from $2,722 to $4,712.</li>
-                <li><strong>Result interpretation:</strong> Training success does not guarantee test robustness; buy-and-hold ($6,016) outperformed all single-segment optimised strategies on the 2020+ bull market.</li>
-                <li><strong>Academic takeaway:</strong> Metaheuristic behaviour must be assessed by both convergence speed and out-of-sample generalisation across market regimes.</li>
-            </ul>
         </div>
     </div>
 </section>
