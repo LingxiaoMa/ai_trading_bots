@@ -220,7 +220,17 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+        <div class="glass-card p-xl border-primary/20 bg-primary/5 mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-sm">Resulting parameterisation</h3>
+            <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
+                <li>FAST and SLOW each combine SMA/LMA/EMA weights and duration controls.</li>
+                <li>EMA alpha is tuned alongside moving-average durations for adaptive smoothing.</li>
+                <li>Final hypotheses balance responsiveness with trend stability.</li>
+                <li>The 14-dimensional parameter set is well suited for CS, ALO, SA and PSO search strategies.</li>
+            </ul>
+        </div>
+
+        <div class="grid grid-cols-1 gap-lg">
             <div class="glass-card p-xl border-secondary/20 bg-surface-container-high">
                 <h3 class="font-headline-sm text-headline-sm mb-sm">Iteration and learning</h3>
                 <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
@@ -228,15 +238,6 @@
                     <li>Introducing asymmetric window bounds improved signal stability and reduced noisy crossovers.</li>
                     <li>Empirical evaluation showed that narrower hypothesis spaces led to better out-of-sample resilience.</li>
                     <li>Practicality dictated a compact yet rich parameterisation that the metaheuristics could explore efficiently.</li>
-                </ul>
-            </div>
-            <div class="glass-card p-xl border-primary/20 bg-primary/5">
-                <h3 class="font-headline-sm text-headline-sm mb-sm">Resulting parameterisation</h3>
-                <ul class="list-disc list-inside space-y-sm font-body-md text-on-surface-variant">
-                    <li>FAST and SLOW each combine SMA/LMA/EMA weights and duration controls.</li>
-                    <li>EMA alpha is tuned alongside moving-average durations for adaptive smoothing.</li>
-                    <li>Final hypotheses balance responsiveness with trend stability.</li>
-                    <li>The 14-dimensional parameter set is well suited for CS, ALO, SA and PSO search strategies.</li>
                 </ul>
             </div>
         </div>
@@ -292,77 +293,11 @@
     </div>
     
     <div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-lg">
-        <!-- Cuckoo Search -->
-        <div class="glass-card p-xl border-secondary-container/20 bg-secondary-container/5 cyber-glow">
-            <div class="flex justify-between items-start mb-lg">
-                <div>
-                    <span class="font-data-mono text-secondary-container text-label-caps">[01] ADVANCED</span>
-                    <h3 class="font-headline-md text-headline-md mt-sm">Cuckoo Search</h3>
-                </div>
-                <span class="material-symbols-outlined text-secondary-container text-4xl">auto_awesome</span>
-            </div>
-            <p class="font-body-md text-on-surface-variant mb-md">Lévy Flight-based exploration with heavy-tailed random walks. Breaks local optima traps through sudden massive parameter leaps.</p>
-            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-md overflow-x-auto text-xs font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 5  Cuckoo Search (CS)</strong>
-
-<span class="text-zinc-500"> 1:</span> NestPopulation <span class="text-amber-400">←</span> <span class="text-sky-400">RandomPopulation</span>()
-<span class="text-zinc-500"> 2:</span> <span class="text-sky-400">EvaluateFitness</span>(NestPopulation)
-<span class="text-zinc-500"> 3:</span> BestNest <span class="text-amber-400">←</span> <span class="text-sky-400">BestSolution</span>(NestPopulation)
-<span class="text-zinc-500"> 4:</span> <span class="text-violet-400">repeat</span>
-<span class="text-zinc-500"> 5:</span>     <span class="text-violet-400">for each</span> nest <span class="text-violet-400">do</span>
-<span class="text-zinc-500"> 6:</span>         NewNest <span class="text-amber-400">←</span> <span class="text-sky-400">LevyFlight</span>(BestNest)
-<span class="text-zinc-500"> 7:</span>         NewNest <span class="text-amber-400">←</span> <span class="text-sky-400">ApplyBounds</span>(NewNest)
-<span class="text-zinc-500"> 8:</span>         NewFitness <span class="text-amber-400">←</span> <span class="text-sky-400">EvaluateFitness</span>(NewNest)
-<span class="text-zinc-500"> 9:</span>         RandomNest <span class="text-amber-400">←</span> <span class="text-sky-400">RandomSelection</span>()
-<span class="text-zinc-500">10:</span>         <span class="text-violet-400">if</span> NewFitness &gt; Fitness(RandomNest) <span class="text-violet-400">then</span>
-<span class="text-zinc-500">11:</span>             <span class="text-sky-400">Replace</span>(RandomNest, NewNest)
-<span class="text-zinc-500">12:</span>         <span class="text-violet-400">end if</span>
-<span class="text-zinc-500">13:</span>         <span class="text-violet-400">if</span> NewFitness &gt; Fitness(BestNest) <span class="text-violet-400">then</span>
-<span class="text-zinc-500">14:</span>             BestNest <span class="text-amber-400">←</span> NewNest
-<span class="text-zinc-500">15:</span>         <span class="text-violet-400">end if</span>
-<span class="text-zinc-500">16:</span>     <span class="text-violet-400">end for</span>
-<span class="text-zinc-500">17:</span>     <span class="text-sky-400">DiscoveryStep</span>()
-<span class="text-zinc-500">18:</span>     <span class="text-sky-400">ReplaceDiscoveredNests</span>()
-<span class="text-zinc-500">19:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum iterations reached</span>
-<span class="text-zinc-500">20:</span> <span class="text-violet-400">return</span> BestNest</code></pre>
-        </div>
-
-        <!-- Antlion Optimizer -->
-        <div class="glass-card p-xl border-secondary/20">
-            <div class="flex justify-between items-start mb-lg">
-                <div>
-                    <span class="font-data-mono text-secondary text-label-caps">[02] POPULATION</span>
-                    <h3 class="font-headline-md text-headline-md mt-sm">Antlion Optimizer</h3>
-                </div>
-                <span class="material-symbols-outlined text-secondary text-4xl">hub</span>
-            </div>
-            <p class="font-body-md text-on-surface-variant mb-md">Swarm intelligence with adaptive boundary shrinking. Balances ant exploration vs. antlion exploitation through dynamic constraint coupling.</p>
-            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-md overflow-x-auto text-xs font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 4  Antlion Optimizer (ALO)</strong>
-
-<span class="text-zinc-500"> 1:</span> AntlionPopulation <span class="text-amber-400">←</span> <span class="text-sky-400">RandomPopulation</span>()
-<span class="text-zinc-500"> 2:</span> <span class="text-sky-400">EvaluateFitness</span>(AntlionPopulation)
-<span class="text-zinc-500"> 3:</span> Elite <span class="text-amber-400">←</span> <span class="text-sky-400">BestAntlion</span>(AntlionPopulation)
-<span class="text-zinc-500"> 4:</span> <span class="text-violet-400">repeat</span>
-<span class="text-zinc-500"> 5:</span>     <span class="text-violet-400">for each</span> ant <span class="text-violet-400">do</span>
-<span class="text-zinc-500"> 6:</span>         SelectedAntlion <span class="text-amber-400">←</span> <span class="text-sky-400">RouletteWheelSelection</span>()
-<span class="text-zinc-500"> 7:</span>         Walk1 <span class="text-amber-400">←</span> <span class="text-sky-400">RandomWalk</span>(SelectedAntlion)
-<span class="text-zinc-500"> 8:</span>         Walk2 <span class="text-amber-400">←</span> <span class="text-sky-400">RandomWalk</span>(Elite)
-<span class="text-zinc-500"> 9:</span>         Ant <span class="text-amber-400">←</span> <span class="text-sky-400">Average</span>(Walk1, Walk2)
-<span class="text-zinc-500">10:</span>         Ant <span class="text-amber-400">←</span> <span class="text-sky-400">ApplyBounds</span>(Ant)
-<span class="text-zinc-500">11:</span>     <span class="text-violet-400">end for</span>
-<span class="text-zinc-500">12:</span>     <span class="text-sky-400">EvaluateFitness</span>(AllAnts)
-<span class="text-zinc-500">13:</span>     CombinedPopulation <span class="text-amber-400">←</span> Antlions <span class="text-orange-400">∪</span> Ants
-<span class="text-zinc-500">14:</span>     <span class="text-sky-400">KeepBestSolutions</span>(CombinedPopulation)
-<span class="text-zinc-500">15:</span>     Elite <span class="text-amber-400">←</span> <span class="text-sky-400">BestAntlion</span>(CombinedPopulation)
-<span class="text-zinc-500">16:</span>     <span class="text-sky-400">ShrinkSearchBoundaries</span>()
-<span class="text-zinc-500">17:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum iterations reached</span>
-<span class="text-zinc-500">18:</span> <span class="text-violet-400">return</span> Elite</code></pre>
-        </div>
-
         <!-- Simulated Annealing -->
         <div class="glass-card p-xl border-secondary/20">
             <div class="flex justify-between items-start mb-lg">
                 <div>
-                    <span class="font-data-mono text-secondary text-label-caps">[03] SINGLE-STATE</span>
+                    <span class="font-data-mono text-secondary text-label-caps">[01] SINGLE-STATE</span>
                     <h3 class="font-headline-md text-headline-md mt-sm">Simulated Annealing</h3>
                 </div>
                 <span class="material-symbols-outlined text-secondary text-4xl">thermostat</span>
@@ -396,6 +331,72 @@
 <span class="text-zinc-500">24:</span>     Temperature <span class="text-amber-400">←</span> Temperature × CoolingRate
 <span class="text-zinc-500">25:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum evaluations reached</span>
 <span class="text-zinc-500">26:</span> <span class="text-violet-400">return</span> BestSolution</code></pre>
+        </div>
+
+        <!-- Cuckoo Search -->
+        <div class="glass-card p-xl border-secondary-container/20 bg-secondary-container/5 cyber-glow">
+            <div class="flex justify-between items-start mb-lg">
+                <div>
+                    <span class="font-data-mono text-secondary-container text-label-caps">[02] ADVANCED</span>
+                    <h3 class="font-headline-md text-headline-md mt-sm">Cuckoo Search</h3>
+                </div>
+                <span class="material-symbols-outlined text-secondary-container text-4xl">auto_awesome</span>
+            </div>
+            <p class="font-body-md text-on-surface-variant mb-md">Lévy Flight-based exploration with heavy-tailed random walks. Breaks local optima traps through sudden massive parameter leaps.</p>
+            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-md overflow-x-auto text-xs font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 5  Cuckoo Search (CS)</strong>
+
+<span class="text-zinc-500"> 1:</span> NestPopulation <span class="text-amber-400">←</span> <span class="text-sky-400">RandomPopulation</span>()
+<span class="text-zinc-500"> 2:</span> <span class="text-sky-400">EvaluateFitness</span>(NestPopulation)
+<span class="text-zinc-500"> 3:</span> BestNest <span class="text-amber-400">←</span> <span class="text-sky-400">BestSolution</span>(NestPopulation)
+<span class="text-zinc-500"> 4:</span> <span class="text-violet-400">repeat</span>
+<span class="text-zinc-500"> 5:</span>     <span class="text-violet-400">for each</span> nest <span class="text-violet-400">do</span>
+<span class="text-zinc-500"> 6:</span>         NewNest <span class="text-amber-400">←</span> <span class="text-sky-400">LevyFlight</span>(BestNest)
+<span class="text-zinc-500"> 7:</span>         NewNest <span class="text-amber-400">←</span> <span class="text-sky-400">ApplyBounds</span>(NewNest)
+<span class="text-zinc-500"> 8:</span>         NewFitness <span class="text-amber-400">←</span> <span class="text-sky-400">EvaluateFitness</span>(NewNest)
+<span class="text-zinc-500"> 9:</span>         RandomNest <span class="text-amber-400">←</span> <span class="text-sky-400">RandomSelection</span>()
+<span class="text-zinc-500">10:</span>         <span class="text-violet-400">if</span> NewFitness &gt; Fitness(RandomNest) <span class="text-violet-400">then</span>
+<span class="text-zinc-500">11:</span>             <span class="text-sky-400">Replace</span>(RandomNest, NewNest)
+<span class="text-zinc-500">12:</span>         <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">13:</span>         <span class="text-violet-400">if</span> NewFitness &gt; Fitness(BestNest) <span class="text-violet-400">then</span>
+<span class="text-zinc-500">14:</span>             BestNest <span class="text-amber-400">←</span> NewNest
+<span class="text-zinc-500">15:</span>         <span class="text-violet-400">end if</span>
+<span class="text-zinc-500">16:</span>     <span class="text-violet-400">end for</span>
+<span class="text-zinc-500">17:</span>     <span class="text-sky-400">DiscoveryStep</span>()
+<span class="text-zinc-500">18:</span>     <span class="text-sky-400">ReplaceDiscoveredNests</span>()
+<span class="text-zinc-500">19:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum iterations reached</span>
+<span class="text-zinc-500">20:</span> <span class="text-violet-400">return</span> BestNest</code></pre>
+        </div>
+
+        <!-- Antlion Optimizer -->
+        <div class="glass-card p-xl border-secondary/20">
+            <div class="flex justify-between items-start mb-lg">
+                <div>
+                    <span class="font-data-mono text-secondary text-label-caps">[03] POPULATION</span>
+                    <h3 class="font-headline-md text-headline-md mt-sm">Antlion Optimizer</h3>
+                </div>
+                <span class="material-symbols-outlined text-secondary text-4xl">hub</span>
+            </div>
+            <p class="font-body-md text-on-surface-variant mb-md">Swarm intelligence with adaptive boundary shrinking. Balances ant exploration vs. antlion exploitation through dynamic constraint coupling.</p>
+            <pre class="rounded-lg bg-surface-container-lowest border border-outline-variant/30 p-md overflow-x-auto text-xs font-mono leading-relaxed"><code><strong class="text-on-surface">Algorithm 4  Antlion Optimizer (ALO)</strong>
+
+<span class="text-zinc-500"> 1:</span> AntlionPopulation <span class="text-amber-400">←</span> <span class="text-sky-400">RandomPopulation</span>()
+<span class="text-zinc-500"> 2:</span> <span class="text-sky-400">EvaluateFitness</span>(AntlionPopulation)
+<span class="text-zinc-500"> 3:</span> Elite <span class="text-amber-400">←</span> <span class="text-sky-400">BestAntlion</span>(AntlionPopulation)
+<span class="text-zinc-500"> 4:</span> <span class="text-violet-400">repeat</span>
+<span class="text-zinc-500"> 5:</span>     <span class="text-violet-400">for each</span> ant <span class="text-violet-400">do</span>
+<span class="text-zinc-500"> 6:</span>         SelectedAntlion <span class="text-amber-400">←</span> <span class="text-sky-400">RouletteWheelSelection</span>()
+<span class="text-zinc-500"> 7:</span>         Walk1 <span class="text-amber-400">←</span> <span class="text-sky-400">RandomWalk</span>(SelectedAntlion)
+<span class="text-zinc-500"> 8:</span>         Walk2 <span class="text-amber-400">←</span> <span class="text-sky-400">RandomWalk</span>(Elite)
+<span class="text-zinc-500"> 9:</span>         Ant <span class="text-amber-400">←</span> <span class="text-sky-400">Average</span>(Walk1, Walk2)
+<span class="text-zinc-500">10:</span>         Ant <span class="text-amber-400">←</span> <span class="text-sky-400">ApplyBounds</span>(Ant)
+<span class="text-zinc-500">11:</span>     <span class="text-violet-400">end for</span>
+<span class="text-zinc-500">12:</span>     <span class="text-sky-400">EvaluateFitness</span>(AllAnts)
+<span class="text-zinc-500">13:</span>     CombinedPopulation <span class="text-amber-400">←</span> Antlions <span class="text-orange-400">∪</span> Ants
+<span class="text-zinc-500">14:</span>     <span class="text-sky-400">KeepBestSolutions</span>(CombinedPopulation)
+<span class="text-zinc-500">15:</span>     Elite <span class="text-amber-400">←</span> <span class="text-sky-400">BestAntlion</span>(CombinedPopulation)
+<span class="text-zinc-500">16:</span>     <span class="text-sky-400">ShrinkSearchBoundaries</span>()
+<span class="text-zinc-500">17:</span> <span class="text-violet-400">until</span> <span class="text-slate-400">maximum iterations reached</span>
+<span class="text-zinc-500">18:</span> <span class="text-violet-400">return</span> Elite</code></pre>
         </div>
 
         <!-- Particle Swarm Optimisation -->
@@ -475,10 +476,123 @@
             </ul>
         </div>
 
-        <div class="mt-lg flex justify-center">
-            <a href="/demo" class="inline-flex items-center justify-center rounded-full bg-secondary-container px-xl py-md text-on-secondary-container font-headline-sm uppercase tracking-tight shadow-[0_0_30px_rgba(20,209,255,0.35)] transition-all hover:brightness-110 active:scale-95">
-                Launch Interactive Demo
-            </a>
+        <!-- Experiment 1: Daily Training -->
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-md">Experiment 1: Convergence on Daily Training Data</h3>
+            <p class="font-body-md text-on-surface-variant mb-md">Comparative analysis of RS, SA, ALO, CS, and PSO on daily Bitcoin training data (pre-2020). Each algorithm allocated 9,000 evaluations. Daily data provides long-term trend evaluation with manageable computational cost.</p>
+            <img src="/image/exp1.png" alt="Daily Convergence" class="w-full h-auto rounded-lg border border-outline-variant/20 shadow-lg mb-md" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                <div class="bg-surface-container-lowest p-md rounded-lg">
+                    <p class="font-label-caps text-label-caps text-secondary-container mb-sm">Training Performance</p>
+                    <ul class="space-y-xs font-body-md text-on-surface-variant text-sm">
+                        <li><span class="font-semibold">PSO:</span> $46,705</li>
+                        <li><span class="font-semibold">ALO:</span> $44,740</li>
+                        <li><span class="font-semibold">CS:</span> $28,595</li>
+                        <li><span class="font-semibold">SA:</span> $29,051</li>
+                        <li><span class="font-semibold">RS:</span> Baseline</li>
+                    </ul>
+                </div>
+                <div class="bg-surface-container-lowest p-md rounded-lg">
+                    <p class="font-label-caps text-label-caps text-secondary mb-sm">Key Findings</p>
+                    <p class="font-body-md text-on-surface-variant text-sm">PSO achieves highest training fitness through rapid velocity-based convergence. Population-based algorithms outperform single-state SA. However, training performance does not guarantee generalization.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Experiment 2: Hourly Training -->
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-md">Experiment 2: Convergence on Hourly Training Data</h3>
+            <p class="font-body-md text-on-surface-variant mb-md">Evaluation on hourly Bitcoin data reveals substantially higher computational complexity. Algorithms require significantly more evaluations for convergence due to increased trading signal frequency and market volatility.</p>
+            <img src="/image/exp2.png" alt="Hourly Convergence" class="w-full h-auto rounded-lg border border-outline-variant/20 shadow-lg mb-md" />
+            <div class="bg-surface-container-lowest p-md rounded-lg mb-md">
+                <p class="font-label-caps text-label-caps text-secondary mb-sm">Resolution Comparison Summary</p>
+                <p class="font-body-md text-on-surface-variant mb-sm">Hourly data generates <strong>30-50x more observations</strong> than daily data, resulting in:</p>
+                <ul class="list-disc list-inside space-y-xs font-body-md text-on-surface-variant text-sm">
+                    <li>Exponentially higher computational requirements</li>
+                    <li>Longer convergence times across all algorithms</li>
+                    <li>Increased optimization landscape complexity</li>
+                    <li>Minute-level data deemed computationally infeasible</li>
+                </ul>
+                <p class="font-body-md text-on-surface-variant mt-sm"><strong>Decision:</strong> All subsequent experiments use daily data to maintain computational feasibility while preserving statistical rigor.</p>
+            </div>
+        </div>
+
+        <!-- Experiment 3: Out-of-Sample Test Performance -->
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-md">Experiment 3: Out-of-Sample Generalization on Test Data</h3>
+            <p class="font-body-md text-on-surface-variant mb-md">Evaluation of optimised strategies on unseen 2020+ Bitcoin market data. This experiment measures true generalization capability and robustness to market regime changes.</p>
+            <img src="/image/exp3.png" alt="Test Portfolio Curves" class="w-full h-auto rounded-lg border border-outline-variant/20 shadow-lg mb-md" />
+            <div class="overflow-x-auto mb-md">
+                <table class="w-full text-sm font-body-md border-collapse">
+                    <thead>
+                        <tr class="border-b border-outline-variant/40">
+                            <th class="text-left py-sm pr-md font-label-caps text-label-caps">Algorithm</th>
+                            <th class="text-right py-sm pr-md font-label-caps text-label-caps">Training ($)</th>
+                            <th class="text-right py-sm pr-md font-label-caps text-label-caps">Test ($)</th>
+                            <th class="text-right py-sm font-label-caps text-label-caps">ROI (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/20">
+                        <tr>
+                            <td class="py-sm pr-md font-semibold">Buy & Hold</td>
+                            <td class="py-sm pr-md text-right">—</td>
+                            <td class="py-sm pr-md text-right text-secondary-container">$6,016</td>
+                            <td class="py-sm text-right text-secondary-container">501.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="py-sm pr-md">Simulated Annealing</td>
+                            <td class="py-sm pr-md text-right">$29,051</td>
+                            <td class="py-sm pr-md text-right text-primary">$4,207</td>
+                            <td class="py-sm text-right text-primary">320.7%</td>
+                        </tr>
+                        <tr>
+                            <td class="py-sm pr-md">Cuckoo Search</td>
+                            <td class="py-sm pr-md text-right">$28,595</td>
+                            <td class="py-sm pr-md text-right">$3,377</td>
+                            <td class="py-sm text-right">237.7%</td>
+                        </tr>
+                        <tr>
+                            <td class="py-sm pr-md">Antlion Optimizer</td>
+                            <td class="py-sm pr-md text-right">$44,740</td>
+                            <td class="py-sm pr-md text-right">$2,234</td>
+                            <td class="py-sm text-right">123.4%</td>
+                        </tr>
+                        <tr>
+                            <td class="py-sm pr-md">Particle Swarm Optimisation</td>
+                            <td class="py-sm pr-md text-right">$46,705</td>
+                            <td class="py-sm pr-md text-right">$2,722</td>
+                            <td class="py-sm text-right">172.2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="bg-surface-container-lowest p-md rounded-lg">
+                <p class="font-label-caps text-label-caps text-primary mb-sm">Key Insight: Bias-Variance Trade-Off</p>
+                <p class="font-body-md text-on-surface-variant">SA's rapid convergence (limited exploration) prevented overfitting despite lower training fitness, yielding superior test generalization. Conversely, PSO and ALO achieved highest training values through aggressive exploitation, resulting in severe overfitting and poor out-of-sample performance.</p>
+            </div>
+        </div>
+
+        <!-- Experiment 4: Multi-Segment Robustness -->
+        <div class="glass-card p-xl border-secondary/20 bg-surface-container-high mb-lg">
+            <h3 class="font-headline-sm text-headline-sm mb-md">Experiment 4: Multi-Segment Robustness Optimisation</h3>
+            <p class="font-body-md text-on-surface-variant mb-md">Optimisation enforced across four distinct market regimes (2014-2016 sideways, 2017 bull, 2018 bear, 2019 recovery) to discover strategies that generalise across varying market conditions.</p>
+            <img src="/image/exp4.png" alt="Multi-Segment Robustness" class="w-full h-auto rounded-lg border border-outline-variant/20 shadow-lg mb-md" />
+            <img src="/image/single-sequence-vs-multi-segment.png" alt="Single vs Multi Segment" class="w-full h-auto rounded-lg border border-outline-variant/20 shadow-lg mb-md" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                <div class="bg-surface-container-lowest p-md rounded-lg">
+                    <p class="font-label-caps text-label-caps text-secondary-container mb-sm">Multi-Segment Test Results</p>
+                    <ul class="space-y-xs font-body-md text-on-surface-variant text-sm">
+                        <li><span class="font-semibold">CS:</span> $5,495 (best robustness)</li>
+                        <li><span class="font-semibold">ALO:</span> $4,971</li>
+                        <li><span class="font-semibold">PSO:</span> $4,712 (+73% vs single-seg)</li>
+                        <li><span class="font-semibold">SA:</span> $3,381 (-20% vs single-seg)</li>
+                    </ul>
+                </div>
+                <div class="bg-surface-container-lowest p-md rounded-lg">
+                    <p class="font-label-caps text-label-caps text-primary mb-sm">Population Advantage</p>
+                    <p class="font-body-md text-on-surface-variant text-sm">Population-based algorithms (CS, ALO, PSO) maintained diverse candidate solutions across market regimes, enabling robust parameter discovery. Single-state SA became trapped in regime-specific optima.</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
